@@ -1,10 +1,11 @@
 # Project Instructions
-Set focus on the first text field
-When the page loads, give focus to the first text field
 
-## ”Job Role” section of the form:
-A text field that will be revealed when the "Other" option is selected from the "Job Role" drop down menu.
-Give the field an id of “other-title,” and add the placeholder text of "Your Job Role" to the field.
+### Set focus on the first text field
+* When the page loads, give focus to the first text field
+
+### ”Job Role” section of the form:
+* A text field that will be revealed when the "Other" option is selected from the "Job Role" drop down menu.
+* Give the field an id of “other-title,” and add the placeholder text of "Your Job Role" to the field.
 
 ”T-Shirt Info” section of the form:
 For the T-Shirt color menu, only display the color options that match the design selected in the "Design" menu.
