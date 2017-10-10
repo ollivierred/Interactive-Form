@@ -1,16 +1,51 @@
+function hideElements(element) {
+  element.style.display = "none";
+}
+
+function showElements(eventEl, hiddenEl) {
+  if (eventEl.value === "other") {
+    hiddenEl.style.display = "";
+  } else {
+    hiddenEl.style.display = "none";
+  }
+}
+
 const jobRole = document.querySelector('#title');
 const otherField = document.querySelector('#other-title');
-otherField.style.display = "none";
+hideElements(otherField);
+
+const payment = document.querySelector("#payment");
+const creditCard = document.querySelector("#credit-card");
+hideElements(creditCard);
+const paypal = document.querySelector("#paypal");
+hideElements(paypal);
+const bitcoin = document.querySelector("#bitcoin");
+hideElements(bitcoin);
 
 //Show and hide input field for the option "other"
 jobRole.addEventListener('change', function() {
-  if (jobRole.value === "other") {
-    otherField.style.display = "";
+  showElements(jobRole, otherField);
+});
+
+//Show and hide input field for the option "other"
+payment.addEventListener('change', function() {
+  if (payment.value === "credit card") {
+    creditCard.style.display = "block";
+  } else if (payment.value === "paypal") {
+    paypal.style.display = "block";
+  } else if (payment.value === "bitcoin") {
+    bitcoin.style.display = "block";
   } else {
-    otherField.style.display = "none";
+    creditCard.style.display = "none";
+    paypal.style.display = "none";
+    bitcoin.style.display = "none";
   }
 });
 
+
+
+
+//”T-Shirt Info” section of the form
 (function() {
 const design = document.querySelector('#design');
 const color = document.querySelector('#color');
@@ -27,8 +62,6 @@ const heartJs =
   '<option value="steelblue">Steel Blue (I &#9829; JS shirt only)</option>' +
   '<option value="dimgrey">Dim Grey (I &#9829; JS shirt only)</option>';
 
-console.log(design);
-console.log(color[1]);
 //Show and hide input field for the option "other"
   design.addEventListener('change', function() {
     let options = '<option value="default" selected>Select a Color</option>';
@@ -44,5 +77,5 @@ console.log(color[1]);
         options += heartJs;
         color.innerHTML = options;
       }
-  }); //design option EventListener
+  }); //”T-Shirt Info” EventListener
 }()); //Immediately invoked function
