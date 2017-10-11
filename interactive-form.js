@@ -95,8 +95,6 @@ function otherField(eventEl, hiddenEl) {
 }()); //Immediately invoked function
 
 (function() {
-  const allActivities = 200;
-  const oneActivity = 100;
   let runningTotal = 0;
 
   const activities = document.querySelector('#activities');
@@ -105,13 +103,16 @@ function otherField(eventEl, hiddenEl) {
   priceDiv.innerHTML =
     '<span>Total: $' + runningTotal +'</span>';
   activities.appendChild(priceDiv);
-  const activitiesList = activities.querySelectorAll('input[type="checkbox"]');
-  console.log(activitiesList);
 
   activities.addEventListener('change', function(e) {
+    const allActivities = 200;
+    const oneActivity = 100;
     console.log(e.target);
     if (e.target.checked) {
-      console.log("You checked the node option");
+      runningTotal += 100;
+      console.log(e.target.name);
+    } else {
+      runningTotal -= 100;
     }
   })
 
