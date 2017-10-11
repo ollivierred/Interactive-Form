@@ -2,14 +2,14 @@ function hideElements(element) {
   element.style.display = "none";
 }
 
-function otherField(eventEl, hiddenEl) {
-  if (eventEl.value === "other") {
-    hiddenEl.style.display = "block";
-  } else {
-    hiddenEl.style.display = "none";
-    hiddenEl.value = "";
-  }
-}
+// function otherField(eventEl, hiddenEl) {
+//   if (eventEl.value === "other") {
+//     hiddenEl.style.display = "block";
+//   } else {
+//     hiddenEl.style.display = "none";
+//     hiddenEl.value = "";
+//   }
+// }
 
 (function() {
   //Holds the list of elements to be hidden
@@ -26,8 +26,13 @@ function otherField(eventEl, hiddenEl) {
 
   const jobRole = document.querySelector('#title');
   //Show and hide input field for the option "other"
-  jobRole.addEventListener('change', function() {
-    otherField(jobRole, node.otherField);
+  jobRole.addEventListener('change', function(eventEl, hiddenEl) {
+    if (eventEl.value === "other") {
+      hiddenEl.style.display = "block";
+    } else {
+        hiddenEl.style.display = "none";
+        hiddenEl.value = "";
+    }
   });
 
   const payment = document.querySelector("#payment");
@@ -95,25 +100,46 @@ function otherField(eventEl, hiddenEl) {
 }()); //Immediately invoked function
 
 (function() {
-  let runningTotal = 0;
 
   const activities = document.querySelector('#activities');
+  const activitiesList = activities.querySelectorAll('input[type="checkbox"]');
   const priceDiv = document.createElement('div');
   priceDiv.id = "running-total";
-  priceDiv.innerHTML =
-    '<span>Total: $' + runningTotal +'</span>';
   activities.appendChild(priceDiv);
 
-  activities.addEventListener('change', function(e) {
-    const allActivities = 200;
-    const oneActivity = 100;
-    console.log(e.target);
-    if (e.target.checked) {
-      runningTotal += 100;
-      console.log(e.target.name);
-    } else {
-      runningTotal -= 100;
-    }
-  })
+  console.log(activitiesList);
+  let runningTotal = 0;
 
+  activities.addEventListener('change', function(e) {
+    console.log(e.target);
+
+    for (let i = 0; i < activitiesList.length; i++) {
+      activitiesList[3].disabled = true;
+    }
+
+    if (e.target.checked) {
+      let checkedEventName = e.target.name;
+      console.log(eventName);
+      if (checkedEventName !== 'all') {
+        
+        //if eventName === 'js-frameworks'
+           //Disable: express[3]
+       //else if eventName === 'express'
+          //Disable: js-frameworks[1]
+
+       //if eventName === 'js-libs'
+          //Disable: node[4]
+       //else if eventName === 'node'
+          //Disable: js-libs[2]
+
+        runningTotal += 100;
+        priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
+        console.log(runningTotal);
+      } else {
+          runningTotal += 200;
+          priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
+          console.log(runningTotal);
+      } //Inner if else statement
+    } //Outer if statement
+  }); //activities EventListener
 }());
