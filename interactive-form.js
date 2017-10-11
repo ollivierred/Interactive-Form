@@ -2,48 +2,61 @@ function hideElements(element) {
   element.style.display = "none";
 }
 
-function showElements(eventEl, hiddenEl) {
+function showOtherField(eventEl, hiddenEl) {
   if (eventEl.value === "other") {
-    hiddenEl.style.display = "";
+    hiddenEl.style.display = "block";
   } else {
+    hiddenEl.value = "";
     hiddenEl.style.display = "none";
   }
 }
 
-const jobRole = document.querySelector('#title');
-const otherField = document.querySelector('#other-title');
-hideElements(otherField);
+(function() {
+  //Holds the list of elements to be hidden
+  let node = {
+    otherField: document.querySelector('#other-title'),
+    creditCard: document.querySelector("#credit-card"),
+    paypal: document.querySelector("#paypal"),
+    bitcoin: document.querySelector("#bitcoin")
+  };
+  //Hides the specified form elements
+  for (let nodeValue in node) {
+    hideElements(node[nodeValue]);
+  };
 
-const payment = document.querySelector("#payment");
-const creditCard = document.querySelector("#credit-card");
-hideElements(creditCard);
-const paypal = document.querySelector("#paypal");
-hideElements(paypal);
-const bitcoin = document.querySelector("#bitcoin");
-hideElements(bitcoin);
+  const jobRole = document.querySelector('#title');
+  //Show and hide input field for the option "other"
+  jobRole.addEventListener('change', function() {
+    showOtherField(jobRole, node.otherField);
+  });
 
-//Show and hide input field for the option "other"
-jobRole.addEventListener('change', function() {
-  showElements(jobRole, otherField);
-});
-
-//Show and hide input field for the option "other"
-payment.addEventListener('change', function() {
-  if (payment.value === "credit card") {
-    creditCard.style.display = "block";
-  } else if (payment.value === "paypal") {
-    paypal.style.display = "block";
-  } else if (payment.value === "bitcoin") {
-    bitcoin.style.display = "block";
-  } else {
-    creditCard.style.display = "none";
-    paypal.style.display = "none";
-    bitcoin.style.display = "none";
-  }
-});
-
-
-
+  const payment = document.querySelector("#payment");
+  //Show and hide input field for the option "other"
+  payment.addEventListener('change', function() {
+    let value = payment.value;
+    console.log(value);
+      if (value.style === 'display', 'block') {
+        value.style = 'display', 'none';
+      }
+        if (value === "credit card") {
+          node.creditCard.style.display = 'block';
+          node.paypal.style.display = 'none';
+          node.bitcoin.style.display = 'none';
+        } else if (value === "paypal") {
+            node.paypal.style.display = 'block';
+            node.creditCard.style.display = 'none';
+            node.bitcoin.style.display = 'none';
+        } else if (value === "bitcoin") {
+            node.bitcoin.style.display = 'block';
+            node.paypal.style.display = 'none';
+            node.creditCard.style.display = 'none';
+        } else {
+          node.bitcoin.style.display = 'none';
+          node.paypal.style.display = 'none';
+          node.creditCard.style.display = 'none';
+        }
+  });
+}());
 
 //”T-Shirt Info” section of the form
 (function() {
