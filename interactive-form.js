@@ -111,35 +111,55 @@ function hideElements(element) {
   let runningTotal = 0;
 
   activities.addEventListener('change', function(e) {
-    console.log(e.target);
-
-    for (let i = 0; i < activitiesList.length; i++) {
-      activitiesList[3].disabled = true;
-    }
-
     if (e.target.checked) {
-      let checkedEventName = e.target.name;
+      let checkedEvent = e.target;
+      let eventName = e.target.name;
+      console.log(checkedEvent);
       console.log(eventName);
-      if (checkedEventName !== 'all') {
-        
-        //if eventName === 'js-frameworks'
-           //Disable: express[3]
-       //else if eventName === 'express'
-          //Disable: js-frameworks[1]
+      //How many are checked
+      for (let i = 0; i < activitiesList.length; i++) {
+        if (checkedEvent) {
+          console.log(activitiesList[i] + "are checked");
+        }
 
-       //if eventName === 'js-libs'
-          //Disable: node[4]
-       //else if eventName === 'node'
-          //Disable: js-libs[2]
-
-        runningTotal += 100;
+      }
+      if (checkedEvent.name === 'all' && checkedEvent !== 'false') {
+        runningTotal += 200;
         priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
         console.log(runningTotal);
-      } else {
-          runningTotal += 200;
+      } else if (checkedEvent.name !== 'all' && checkedEvent !== 'false') {
+          runningTotal += 100;
           priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
           console.log(runningTotal);
+      } else {
+        runningTotal -= 100;
       } //Inner if else statement
     } //Outer if statement
   }); //activities EventListener
 }());
+
+
+// for (let i = 0; i < activitiesList.length; i++) {
+//   activitiesList[3].disabled = true;
+// }
+
+//Conflicts: js-frameworks, express
+//           js-libs, node
+// function disableCheckbox(checkedEventName, conflictEven) {
+//   if (checkedEvent.checked === false) {
+//     for (let i = 0; i < activitiesList.length; i++) {
+//       activitiesList[i].disabled = false;
+//     }
+//   } else {
+//     if (checkedEvent.name === 'js-frameworks') {
+//     //  retrieve its conflict, conflict.disabled = true;
+//    } else if (checkedEvent.name === 'express') {
+//         activitiesList[1].disabled = true;
+//     }
+//   }
+//
+//  //if checkedEventName === 'js-libs'
+//     //Disable: node[4]
+//  //else if checkedEventName === 'node'
+//     //Disable: js-libs[2]
+// }
