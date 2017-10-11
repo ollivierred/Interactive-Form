@@ -2,12 +2,12 @@ function hideElements(element) {
   element.style.display = "none";
 }
 
-function showOtherField(eventEl, hiddenEl) {
+function otherField(eventEl, hiddenEl) {
   if (eventEl.value === "other") {
     hiddenEl.style.display = "block";
   } else {
-    hiddenEl.value = "";
     hiddenEl.style.display = "none";
+    hiddenEl.value = "";
   }
 }
 
@@ -27,7 +27,7 @@ function showOtherField(eventEl, hiddenEl) {
   const jobRole = document.querySelector('#title');
   //Show and hide input field for the option "other"
   jobRole.addEventListener('change', function() {
-    showOtherField(jobRole, node.otherField);
+    otherField(jobRole, node.otherField);
   });
 
   const payment = document.querySelector("#payment");
@@ -60,35 +60,59 @@ function showOtherField(eventEl, hiddenEl) {
 
 //”T-Shirt Info” section of the form
 (function() {
-const design = document.querySelector('#design');
-const color = document.querySelector('#color');
-const defaultOption = '<option><-- Select a T-shirt theme</option>';
-color.innerHTML = defaultOption;
 
-const jsPuns =
-  '<option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>' +
-  '<option value="darkslategrey">Dark Slate Grey (JS Puns shirt only)</option>' +
-  '<option value="gold">Gold (JS Puns shirt only)</option>';
+  const design = document.querySelector('#design');
+  const color = document.querySelector('#color');
+  const defaultOption = '<option><-- Select a T-shirt theme</option>';
+  color.innerHTML = defaultOption;
 
-const heartJs =
-  '<option value="tomato">Tomato (I &#9829; JS shirt only)</option>' +
-  '<option value="steelblue">Steel Blue (I &#9829; JS shirt only)</option>' +
-  '<option value="dimgrey">Dim Grey (I &#9829; JS shirt only)</option>';
+  const jsPuns =
+    '<option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>' +
+    '<option value="darkslategrey">Dark Slate Grey (JS Puns shirt only)</option>' +
+    '<option value="gold">Gold (JS Puns shirt only)</option>';
 
-//Show and hide input field for the option "other"
-  design.addEventListener('change', function() {
-    let options = '<option value="default" selected>Select a Color</option>';
+  const heartJs =
+    '<option value="tomato">Tomato (I &#9829; JS shirt only)</option>' +
+    '<option value="steelblue">Steel Blue (I &#9829; JS shirt only)</option>' +
+    '<option value="dimgrey">Dim Grey (I &#9829; JS shirt only)</option>';
 
-    if (this.value === 'default') {
-      color.innerHTML = defaultOption;
-      return;
-    }
-      if (this.value === "js puns") {
-        options += jsPuns;
-        color.innerHTML = options;
-      } else if (this.value === "heart js") {
-        options += heartJs;
-        color.innerHTML = options;
+  //Show and hide input field for the option "other"
+    design.addEventListener('change', function() {
+      let options = '<option value="default" selected>Select a Color</option>';
+
+      if (this.value === 'default') {
+        color.innerHTML = defaultOption;
+        return;
       }
-  }); //”T-Shirt Info” EventListener
+        if (this.value === "js puns") {
+          options += jsPuns;
+          color.innerHTML = options;
+        } else if (this.value === "heart js") {
+          options += heartJs;
+          color.innerHTML = options;
+        }
+    }); //”T-Shirt Info” EventListener
 }()); //Immediately invoked function
+
+(function() {
+  const allActivities = 200;
+  const oneActivity = 100;
+  let runningTotal = 0;
+
+  const activities = document.querySelector('#activities');
+  const priceDiv = document.createElement('div');
+  priceDiv.id = "running-total";
+  priceDiv.innerHTML =
+    '<span>Total: $' + runningTotal +'</span>';
+  activities.appendChild(priceDiv);
+  const activitiesList = activities.querySelectorAll('input[type="checkbox"]');
+  console.log(activitiesList);
+
+  activities.addEventListener('change', function(e) {
+    console.log(e.target);
+    if (e.target.checked) {
+      console.log("You checked the node option");
+    }
+  })
+
+}());
