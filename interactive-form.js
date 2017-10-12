@@ -101,41 +101,70 @@ function hideElements(element) {
 
 (function() {
 
-  const activities = document.querySelector('#activities');
-  const activitiesList = activities.querySelectorAll('input[type="checkbox"]');
+  const fieldset = document.querySelector('.activities');
+  const activitiesList = fieldset.querySelectorAll('input[type="checkbox"]');
   const priceDiv = document.createElement('div');
   priceDiv.id = "running-total";
-  activities.appendChild(priceDiv);
+  fieldset.appendChild(priceDiv);
 
-  console.log(activitiesList);
   let runningTotal = 0;
+  fieldset.addEventListener('change', function(e) {
+    const checkbox = e.target;
+    const checked = checkbox.checked;
+    const boxName = checkbox.name;
+    const boxValue = checkbox.parentNode.textContent;
+    console.log(checkbox);
+    console.log(checked);
+    console.log(boxName);
+    console.log(boxValue);
 
-  activities.addEventListener('change', function(e) {
-    if (e.target.checked) {
-      let checkedEvent = e.target;
-      let eventName = e.target.name;
-      console.log(checkedEvent);
-      console.log(eventName);
-      //How many are checked
-      for (let i = 0; i < activitiesList.length; i++) {
-        if (checkedEvent) {
-          console.log(activitiesList[i] + "are checked");
-        }
+    function checkActivities(name, day, time, price) {
+      this.name = name;
+      this.day = day;
+      this.time = time;
+      this.price = price;
+    }
+    let jsFrameworks = new checkActivities('js-frameworks', 'Tuesday', '9am-12pm', 100);
+    let jsLibs = new checkActivities('js-libs', 'Tuesday', '1pm-4pm', 100);
+    let express = new checkActivities('express', 'Tuesday', '9am-12pm', 100);
+    let node = new checkActivities('node', 'Tuesday', '1pm-4pm', 100);
 
-      }
-      if (checkedEvent.name === 'all' && checkedEvent !== 'false') {
-        runningTotal += 200;
-        priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
-        console.log(runningTotal);
-      } else if (checkedEvent.name !== 'all' && checkedEvent !== 'false') {
-          runningTotal += 100;
-          priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
-          console.log(runningTotal);
-      } else {
-        runningTotal -= 100;
-      } //Inner if else statement
-    } //Outer if statement
+    console.log(jsFrameworks.name, jsFrameworks.day, jsFrameworks.time, jsFrameworks.price);
+
+
+    if (checked && boxName !== "all") {
+      runningTotal += 100;
+      console.log("Price is $" + runningTotal + " dollars " );
+    } else {
+      runningTotal -= 100;
+      console.log("Price is $" + runningTotal + " dollars " );
+    }
+
+    if (checked && boxName === "all") {
+      runningTotal += 200;
+      console.log("Price is $" + runningTotal + " dollars " );
+    }
+
+
+
+
+      // if (checked) {
+      //   runningTotal += 100;
+      //   console.log("Price is $" + runningTotal + " dollars " );
+      // } else {
+      //   runningTotal -= 100;
+      //   console.log("Price is $" + runningTotal + " dollars " );
+      // }
+
+        // if (eventName !== "all") {
+        //    = areChecked * 100;
+        // } else {
+        //   runningTotal = (areChecked * 100) + 100;
+        // };
+
+          // priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
   }); //activities EventListener
+
 }());
 
 
