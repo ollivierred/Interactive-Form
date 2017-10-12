@@ -1,13 +1,13 @@
-//Disables / Enables checkboxes...
+// Disables / Enables checkboxes...
 function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
   if (checkedBox && checkedBoxName === thisName) {
       conflict.disabled = true;
   } else if (!checkedBox && checkedBoxName === thisName) {
       conflict.disabled = false;
   }
-};
+};// checkboxControl function
 
-//Show / Hide function...
+// Show / Hide function...
 (function() {
   //Holds the list of elements to be hidden
   let node = {
@@ -60,7 +60,7 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
   });
 }());
 
-//”T-Shirt Info” function...
+// ”T-Shirt Info” function...
 (function() {
   const design = document.querySelector('#design');
   const color = document.querySelector('#color');
@@ -95,7 +95,7 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
     }); //”T-Shirt Info” EventListener
 }()); //Immediately invoked function
 
-//Activities function...
+// Activities function...
 (function() {
   const fieldset = document.querySelector('.activities');
   const activitiesList = fieldset.querySelectorAll('input[type="checkbox"]');
@@ -112,27 +112,23 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
     const boxName = checkbox.name;
     const boxValue = checkbox.parentNode.textContent;
 
-    //Tracks running total, DON'T TOUCH IT!
+    // Tracks the running total...
+      // If box is checked || unchecked and the main activity
+      // If box is checked || unchecked
     if (isChecked && boxName === "all") {
       runningTotal += 200;
-        console.log("Checked " + boxName);
     } else if (!isChecked && boxName === "all") {
       runningTotal -= 200;
-        console.log("Unchecked");
     } else {
       if (isChecked) {
         runningTotal += 100;
-         console.log("Checked " + boxName);
       } else if (!isChecked) {
         runningTotal -= 100;
-         console.log("Unchecked");
-      }
-    }
+      }// Inner if, else statement
+    }// Outer if, else statement
     priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
-
-/*----------------------------------------------------------------------*/
-
-    //Stores the activities, would like this be be more dynamic
+    
+    // Stores the activities, would like this be be more dynamic
     let event = {
       all: fieldset.querySelector('input[name="all"]'),
       jsFrameworks: fieldset.querySelector('input[name="js-frameworks"]'),
@@ -142,11 +138,11 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
       buildTools: fieldset.querySelector('input[name="build-tools"]'),
       npm: fieldset.querySelector('input[name="npm"]')
     }
-    //Prevent selection of activities that conflict
+    // Prevent selection of activities that conflict
     // checkedBox, checkedBoxName, thisName ,conflict
     checkboxControl(isChecked, boxName, "js-frameworks", event.express);
     checkboxControl(isChecked, boxName, "express", event.jsFrameworks);
     checkboxControl(isChecked, boxName, "js-libs", event.node);
     checkboxControl(isChecked, boxName, "node", event.jsLibs);
-  }); //activities EventListener
-}());
+  });// activities EventListener
+}());// End of function
