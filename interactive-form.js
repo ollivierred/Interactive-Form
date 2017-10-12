@@ -127,7 +127,7 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
       }// Inner if, else statement
     }// Outer if, else statement
     priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
-    
+
     // Stores the activities, would like this be be more dynamic
     let event = {
       all: fieldset.querySelector('input[name="all"]'),
@@ -146,3 +146,5 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
     checkboxControl(isChecked, boxName, "node", event.jsLibs);
   });// activities EventListener
 }());// End of function
+
+//Form validation function...
