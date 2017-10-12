@@ -2,14 +2,18 @@ function hideElements(element) {
   element.style.display = "none";
 }
 
-// function otherField(eventEl, hiddenEl) {
-//   if (eventEl.value === "other") {
-//     hiddenEl.style.display = "block";
-//   } else {
-//     hiddenEl.style.display = "none";
-//     hiddenEl.value = "";
-//   }
-// }
+function searchForConflicts(thisList, searchValue) {
+  let conflicts = [];
+  for (let i = 0; i < thisList.length; i++) {
+    let content = thisList[i].textContent;
+    // console.log(content);
+    //Searching list of student names and emails for a match...
+    if (content.search(searchValue) > -1) {
+      conflicts.push(thisList[i].textContent);
+    };
+  };
+  return conflicts;
+} //End of Searching function
 
 (function() {
   //Holds the list of elements to be hidden
@@ -99,96 +103,66 @@ function hideElements(element) {
     }); //”T-Shirt Info” EventListener
 }()); //Immediately invoked function
 
-(function() {
 
+(function() {
   const fieldset = document.querySelector('.activities');
   const activitiesList = fieldset.querySelectorAll('input[type="checkbox"]');
+  const labels = fieldset.querySelectorAll('label');
   const priceDiv = document.createElement('div');
   priceDiv.id = "running-total";
   fieldset.appendChild(priceDiv);
 
-  let runningTotal = 0;
+  var runningTotal = 0;
+
   fieldset.addEventListener('change', function(e) {
     const checkbox = e.target;
     const checked = checkbox.checked;
     const boxName = checkbox.name;
     const boxValue = checkbox.parentNode.textContent;
-    console.log(checkbox);
-    console.log(checked);
-    console.log(boxName);
-    console.log(boxValue);
 
-    function checkActivities(name, day, time, price) {
-      this.name = name;
-      this.day = day;
-      this.time = time;
-      this.price = price;
-    }
-    let jsFrameworks = new checkActivities('js-frameworks', 'Tuesday', '9am-12pm', 100);
-    let jsLibs = new checkActivities('js-libs', 'Tuesday', '1pm-4pm', 100);
-    let express = new checkActivities('express', 'Tuesday', '9am-12pm', 100);
-    let node = new checkActivities('node', 'Tuesday', '1pm-4pm', 100);
-
-    console.log(jsFrameworks.name, jsFrameworks.day, jsFrameworks.time, jsFrameworks.price);
-
-
-    if (checked && boxName !== "all") {
-      runningTotal += 100;
-      console.log("Price is $" + runningTotal + " dollars " );
-    } else {
-      runningTotal -= 100;
-      console.log("Price is $" + runningTotal + " dollars " );
-    }
-
+    //Tracks running total, DON'T TOUCH IT!
     if (checked && boxName === "all") {
       runningTotal += 200;
-      console.log("Price is $" + runningTotal + " dollars " );
+        console.log("Checked, $" + runningTotal);
+        console.log(boxName);
+    } else if (!checked && boxName === "all") {
+      runningTotal -= 200;
+        console.log("Unchecked, $" + runningTotal);
+    } else {
+      if (checked) {
+        runningTotal += 100;
+         console.log("Checked, $" + runningTotal);
+         console.log(boxName);
+      } else if (!checked) {
+        runningTotal -= 100;
+         console.log("Unchecked, $" + runningTotal);
+      }
     }
-
-
-
-
-      // if (checked) {
-      //   runningTotal += 100;
-      //   console.log("Price is $" + runningTotal + " dollars " );
-      // } else {
-      //   runningTotal -= 100;
-      //   console.log("Price is $" + runningTotal + " dollars " );
-      // }
-
-        // if (eventName !== "all") {
-        //    = areChecked * 100;
-        // } else {
-        //   runningTotal = (areChecked * 100) + 100;
-        // };
-
-          // priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
+    priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
   }); //activities EventListener
+
+  // let list = {
+  //   all:
+  //   jsFrameworks:
+  //   jsLibs:
+  //   express:
+  //   node:
+  //   buildTools:
+  //   npm:
+  // }
 
 }());
 
 
-// for (let i = 0; i < activitiesList.length; i++) {
-//   activitiesList[3].disabled = true;
-// }
-
 //Conflicts: js-frameworks, express
 //           js-libs, node
-// function disableCheckbox(checkedEventName, conflictEven) {
-//   if (checkedEvent.checked === false) {
-//     for (let i = 0; i < activitiesList.length; i++) {
-//       activitiesList[i].disabled = false;
-//     }
-//   } else {
-//     if (checkedEvent.name === 'js-frameworks') {
-//     //  retrieve its conflict, conflict.disabled = true;
-//    } else if (checkedEvent.name === 'express') {
-//         activitiesList[1].disabled = true;
-//     }
-//   }
-//
-//  //if checkedEventName === 'js-libs'
-//     //Disable: node[4]
-//  //else if checkedEventName === 'node'
-//     //Disable: js-libs[2]
-// }
+
+    //if checked === js-frameworks
+      //find express HTML node --> disable express
+    //if checked === express
+      //find js-frameworks HTML node --> disable js-frameworks
+
+    //if checked === js-libs
+      //find node HTML node --> disable node
+    //if checked === node
+      //find js-libs HTML node --> disable js-libs
