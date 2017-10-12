@@ -1,20 +1,13 @@
-function hideElements(element) {
-  element.style.display = "none";
-}
+//Disables / Enables checkboxes...
+function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
+  if (checkedBox && checkedBoxName === thisName) {
+      conflict.disabled = true;
+  } else if (!checkedBox && checkedBoxName === thisName) {
+      conflict.disabled = false;
+  }
+};
 
-function searchForConflicts(thisList, searchValue) {
-  let conflicts = [];
-  for (let i = 0; i < thisList.length; i++) {
-    let content = thisList[i].textContent;
-    // console.log(content);
-    //Searching list of student names and emails for a match...
-    if (content.search(searchValue) > -1) {
-      conflicts.push(thisList[i].textContent);
-    };
-  };
-  return conflicts;
-} //End of Searching function
-
+//Show / Hide function...
 (function() {
   //Holds the list of elements to be hidden
   let node = {
@@ -25,22 +18,22 @@ function searchForConflicts(thisList, searchValue) {
   };
   //Hides the specified form elements
   for (let nodeValue in node) {
-    hideElements(node[nodeValue]);
+    node[nodeValue].style.display = "none";
   };
 
-  const jobRole = document.querySelector('#title');
   //Show and hide input field for the option "other"
-  jobRole.addEventListener('change', function(eventEl, hiddenEl) {
-    if (eventEl.value === "other") {
-      hiddenEl.style.display = "block";
+  const jobRole = document.querySelector('#title');
+  jobRole.addEventListener('change', function(e) {
+    if (e.target.value === "other") {
+      node.otherField.style.display = "block";
     } else {
-        hiddenEl.style.display = "none";
-        hiddenEl.value = "";
+        node.otherField.style.display = "none";
+        node.otherField.value = "";
     }
   });
 
-  const payment = document.querySelector("#payment");
   //Show and hide input field for the option "other"
+  const payment = document.querySelector("#payment");
   payment.addEventListener('change', function() {
     let value = payment.value;
     console.log(value);
@@ -67,9 +60,8 @@ function searchForConflicts(thisList, searchValue) {
   });
 }());
 
-//”T-Shirt Info” section of the form
+//”T-Shirt Info” function...
 (function() {
-
   const design = document.querySelector('#design');
   const color = document.querySelector('#color');
   const defaultOption = '<option><-- Select a T-shirt theme</option>';
@@ -103,66 +95,58 @@ function searchForConflicts(thisList, searchValue) {
     }); //”T-Shirt Info” EventListener
 }()); //Immediately invoked function
 
-
+//Activities function...
 (function() {
   const fieldset = document.querySelector('.activities');
   const activitiesList = fieldset.querySelectorAll('input[type="checkbox"]');
   const labels = fieldset.querySelectorAll('label');
+  var runningTotal = 0;
+
   const priceDiv = document.createElement('div');
   priceDiv.id = "running-total";
   fieldset.appendChild(priceDiv);
 
-  var runningTotal = 0;
-
   fieldset.addEventListener('change', function(e) {
     const checkbox = e.target;
-    const checked = checkbox.checked;
+    const isChecked = checkbox.checked;
     const boxName = checkbox.name;
     const boxValue = checkbox.parentNode.textContent;
 
     //Tracks running total, DON'T TOUCH IT!
-    if (checked && boxName === "all") {
+    if (isChecked && boxName === "all") {
       runningTotal += 200;
-        console.log("Checked, $" + runningTotal);
-        console.log(boxName);
-    } else if (!checked && boxName === "all") {
+        console.log("Checked " + boxName);
+    } else if (!isChecked && boxName === "all") {
       runningTotal -= 200;
-        console.log("Unchecked, $" + runningTotal);
+        console.log("Unchecked");
     } else {
-      if (checked) {
+      if (isChecked) {
         runningTotal += 100;
-         console.log("Checked, $" + runningTotal);
-         console.log(boxName);
-      } else if (!checked) {
+         console.log("Checked " + boxName);
+      } else if (!isChecked) {
         runningTotal -= 100;
-         console.log("Unchecked, $" + runningTotal);
+         console.log("Unchecked");
       }
     }
     priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
+
+/*----------------------------------------------------------------------*/
+
+    //Stores the activities, would like this be be more dynamic
+    let event = {
+      all: fieldset.querySelector('input[name="all"]'),
+      jsFrameworks: fieldset.querySelector('input[name="js-frameworks"]'),
+      jsLibs: fieldset.querySelector('input[name="js-libs"]'),
+      express: fieldset.querySelector('input[name="express"]'),
+      node: fieldset.querySelector('input[name="node"]'),
+      buildTools: fieldset.querySelector('input[name="build-tools"]'),
+      npm: fieldset.querySelector('input[name="npm"]')
+    }
+    //Prevent selection of activities that conflict
+    // checkedBox, checkedBoxName, thisName ,conflict
+    checkboxControl(isChecked, boxName, "js-frameworks", event.express);
+    checkboxControl(isChecked, boxName, "express", event.jsFrameworks);
+    checkboxControl(isChecked, boxName, "js-libs", event.node);
+    checkboxControl(isChecked, boxName, "node", event.jsLibs);
   }); //activities EventListener
-
-  // let list = {
-  //   all:
-  //   jsFrameworks:
-  //   jsLibs:
-  //   express:
-  //   node:
-  //   buildTools:
-  //   npm:
-  // }
-
 }());
-
-
-//Conflicts: js-frameworks, express
-//           js-libs, node
-
-    //if checked === js-frameworks
-      //find express HTML node --> disable express
-    //if checked === express
-      //find js-frameworks HTML node --> disable js-frameworks
-
-    //if checked === js-libs
-      //find node HTML node --> disable node
-    //if checked === node
-      //find js-libs HTML node --> disable js-libs
