@@ -20,11 +20,11 @@
       <fieldset>
         <legend>Basic Info</legend>
 
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="user_name" pattern="^(-?([A-Z].\s)?([A-Z][a-z]+)\s?)+([A-Z]'([A-Z][a-z]+))?$" autofocus>
+        <label for="name">Name:<span class="error"></span></label>
+        <input type="text" id="name" name="user_name" pattern="^(-?([A-Z].\s)?([A-Z][a-z]+)\s?)+([A-Z]'([A-Z][a-z]+))?$" placeholder="Enter a valid name" autofocus>
 
-        <label for="mail">Email:</label>
-        <input type="email" id="mail" name="user_email" pattern="([\w\.]+)@([\w\.]+)\.(\w+)">
+        <label for="mail">Email:<span class="error"></span></label>
+        <input type="email" id="mail" name="user_email" pattern="([\w\.]+)@([\w\.]+)\.(\w+)" placeholder="myname@example.com">
 
         <label for="title">Job Role</label>
         <select id="title" name="user_title">
@@ -40,6 +40,7 @@
 
       <fieldset class="shirt">
         <legend>T-Shirt Info</legend>
+        <span class="error"></span>
 
         <div>
           <label for="size">Size:</label>
@@ -75,6 +76,8 @@
 
       <fieldset class="activities">
         <legend>Register for Activities</legend>
+        <span class="error"></span>
+
         <label><input type="checkbox" name="all"> Main Conference — $200</label>
         <label><input type="checkbox" name="js-frameworks"> JavaScript Frameworks Workshop — Tuesday 9am-12pm, $100</label>
         <label><input type="checkbox" name="js-libs"> JavaScript Libraries Workshop — Tuesday 1pm-4pm, $100</label>
@@ -99,17 +102,17 @@
 
           <div class="col-6 col">
             <label for="cc-num">Card Number:</label>
-        	  <input id="cc-num" name="user_cc-num" pattern="" type="text">
+        	  <input id="cc-num" name="user_cc-num"type="text" pattern="^(?:\d[ -]*?){13,16}$" placeholder="">
           </div>
 
           <div class="col-3 col">
             <label for="zip">Zip Code:</label>
-            <input id="zip" name="user_zip" pattern="" type="text">
+            <input id="zip" name="user_zip" type="text" pattern="[0-9]{5}" placeholder="">
           </div>
 
           <div class="col-3 col">
             <label for="cvv">CVV:</label>
-            <input id="cvv" name="user_cvv" pattern="" type="text">
+            <input id="cvv" name="user_cvv" type="text" pattern="[0-9]{3}" placeholder="">
           </div>
 
           <label for="exp-month">Expiration Date:</label>

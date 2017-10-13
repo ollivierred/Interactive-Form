@@ -1,3 +1,8 @@
+const thisForm = document.querySelector('#register-form');
+const inputList = document.querySelectorAll('input');
+const fieldset = document.querySelector('.activities');
+const activitiesChecked = fieldset.querySelectorAll('input[type="checkbox"]');
+const submit = thisForm.querySelector('[type="submit"]');
 // Disables / Enables checkboxes...
 function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
   if (checkedBox && checkedBoxName === thisName) {
@@ -91,9 +96,7 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
 
 // Activities function...
 (function() {
-  const fieldset = document.querySelector('.activities');
-  const activitiesList = fieldset.querySelectorAll('input[type="checkbox"]');
-  const labels = fieldset.querySelectorAll('label');
+  // const labels = fieldset.querySelectorAll('label');
   var runningTotal = 0;
 
   const priceDiv = document.createElement('div');
@@ -142,13 +145,6 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
 }());// End of function
 
 //Form validation function...
-const thisForm = document.querySelector('#register-form');
-const email = thisForm.querySelector('input[type="email"]');
-const inputField = thisForm.querySelectorAll('input[type="text"]');
-console.log(thisForm);
-console.log(inputField);
-console.log(email);
-
 //Retrieve the current input field being worked on
 //Validate the value from the input field
 thisForm.addEventListener('input', (e) => {
@@ -156,22 +152,47 @@ thisForm.addEventListener('input', (e) => {
   let inputValue = e.target.value;
   let inputPattern = e.target.pattern;
 
-  let currentPattern = new RegExp(inputPattern);
-  let isValid = currentPattern.test(inputValue);
+  //validation
+  if (inputPattern) {
+    let currentPattern = new RegExp(inputPattern);
+    let isValid = currentPattern.test(inputValue);
+    console.log(isValid);
+    //Produce appropriate color change or error message
+      if (!isValid || inputValue === "") {
+        showError(inputField)
+        inputField.style.border = "2px solid rgba(255, 0, 0, 0.35)";
+      } else {
+        inputField.style.border = "2px solid rgba(47, 236, 0, 0.58)";
+        console.log('No errors');
+      }
+  }
 
-  console.log(currentPattern);
-  console.log(isValid);
-
-  //Produce appropriate color change or error message
-    if (!isValid) {
-      inputField.style.border = "2px solid rgba(255, 0, 0, 0.35)";
-      console.log('That is an error');
-    } else {
-      inputField.style.border = "2px solid rgba(47, 236, 0, 0.58)";
-      console.log('No errors');
-    }
 
 })// End of Event listener
+
+function activitiesValidation() {
+  if (activitiesChecked.length > 0) {
+    return;
+  } else {
+    showError()
+  }
+}
+//errors
+function showError(field) {
+  let error = '<span>An error is here</span>';
+  let node = field.previousElementSibling;
+  node.textContent = "Whoops error here";
+}
+
+
+submit.addEventListener('submit', (e) => {
+  e.preventDefault();
+  let allValid = false;
+  if (allValid) {
+   console.log("Can't submit.");
+  }
+})
+
 
 //Name field can't be blank
 //validly formatted e-mail address: dave@teamtreehouse.com
