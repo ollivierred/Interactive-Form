@@ -32,31 +32,25 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
     }
   });
 
-  //Show and hide input field for the option "other"
+  //Control display when payment option is selected
+  node.creditCard.style.display = 'inherit';
+  //Credit-card shows by default
   const payment = document.querySelector("#payment");
   payment.addEventListener('change', function() {
     let value = payment.value;
-    console.log(value);
-      if (value.style === 'display', 'block') {
-        value.style = 'display', 'none';
-      }
-        if (value === "credit card") {
-          node.creditCard.style.display = 'block';
-          node.paypal.style.display = 'none';
-          node.bitcoin.style.display = 'none';
-        } else if (value === "paypal") {
-            node.paypal.style.display = 'block';
-            node.creditCard.style.display = 'none';
-            node.bitcoin.style.display = 'none';
-        } else if (value === "bitcoin") {
-            node.bitcoin.style.display = 'block';
-            node.paypal.style.display = 'none';
-            node.creditCard.style.display = 'none';
-        } else {
-          node.bitcoin.style.display = 'none';
-          node.paypal.style.display = 'none';
-          node.creditCard.style.display = 'none';
-        }
+    if (value === "paypal") {
+        node.paypal.style.display = 'inherit';
+        node.creditCard.style.display = 'none';
+        node.bitcoin.style.display = 'none';
+    } else if (value === "bitcoin") {
+        node.bitcoin.style.display = 'inherit';
+        node.paypal.style.display = 'none';
+        node.creditCard.style.display = 'none';
+    } else {
+      node.bitcoin.style.display = 'none';
+      node.paypal.style.display = 'none';
+      node.creditCard.style.display = 'inherit';
+    }
   });
 }());
 
@@ -148,3 +142,44 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
 }());// End of function
 
 //Form validation function...
+const thisForm = document.querySelector('#register-form');
+const email = thisForm.querySelector('input[type="email"]');
+const inputField = thisForm.querySelectorAll('input[type="text"]');
+console.log(thisForm);
+console.log(inputField);
+console.log(email);
+
+//Retrieve the current input field being worked on
+//Validate the value from the input field
+thisForm.addEventListener('input', (e) => {
+  let inputField = e.target;
+  let inputValue = e.target.value;
+  let inputPattern = e.target.pattern;
+
+  let currentPattern = new RegExp(inputPattern);
+  let isValid = currentPattern.test(inputValue);
+
+  console.log(currentPattern);
+  console.log(isValid);
+
+  //Produce appropriate color change or error message
+    if (!isValid) {
+      inputField.style.border = "2px solid rgba(255, 0, 0, 0.35)";
+      console.log('That is an error');
+    } else {
+      inputField.style.border = "2px solid rgba(47, 236, 0, 0.58)";
+      console.log('No errors');
+    }
+
+})// End of Event listener
+
+//Name field can't be blank
+//validly formatted e-mail address: dave@teamtreehouse.com
+//Must select at least one checkbox under the "Register for Activities" section of the form.
+//If payment option is "Credit Card," user must supply:
+  //a credit card number,
+  //a zip code,
+  //a 3 number CVV value before the form can be submitted.
+//Credit card field should only accept a number between 13 and 16 digits
+//The zipcode field should accept a 5-digit number
+//The CVV should only accept a number that is exactly 3 digits long

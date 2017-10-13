@@ -15,16 +15,16 @@
       <h1>Full Stack Conf</h1>
     </header>
 
-    <form name="registerForm" action="index.html" method="post">
+    <form id="register-form" name="registerForm" action="index.html" method="post">
 
       <fieldset>
         <legend>Basic Info</legend>
 
         <label for="name">Name:</label>
-        <input type="text" id="name" name="user_name" autofocus>
+        <input type="text" id="name" name="user_name" pattern="^(-?([A-Z].\s)?([A-Z][a-z]+)\s?)+([A-Z]'([A-Z][a-z]+))?$" autofocus>
 
         <label for="mail">Email:</label>
-        <input type="email" id="mail" name="user_email">
+        <input type="email" id="mail" name="user_email" pattern="([\w\.]+)@([\w\.]+)\.(\w+)">
 
         <label for="title">Job Role</label>
         <select id="title" name="user_title">
@@ -90,7 +90,7 @@
         <label for="payment">I'm going to pay with:</label>
         <select id="payment" name="user_payment">
           <option value="select_method">Select Payment Method</option>
-          <option value="credit card">Credit Card</option>
+          <option value="credit card" selected>Credit Card</option>
           <option value="paypal">PayPal</option>
           <option value="bitcoin">Bitcoin</option>
         </select>
@@ -99,17 +99,17 @@
 
           <div class="col-6 col">
             <label for="cc-num">Card Number:</label>
-        	  <input id="cc-num" name="user_cc-num" type="text">
+        	  <input id="cc-num" name="user_cc-num" pattern="" type="text">
           </div>
 
           <div class="col-3 col">
             <label for="zip">Zip Code:</label>
-            <input id="zip" name="user_zip" type="text">
+            <input id="zip" name="user_zip" pattern="" type="text">
           </div>
 
           <div class="col-3 col">
             <label for="cvv">CVV:</label>
-            <input id="cvv" name="user_cvv" type="text">
+            <input id="cvv" name="user_cvv" pattern="" type="text">
           </div>
 
           <label for="exp-month">Expiration Date:</label>
