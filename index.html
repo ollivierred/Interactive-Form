@@ -20,11 +20,11 @@
       <fieldset>
         <legend>Basic Info</legend>
 
-        <label for="name">Name:<span class="error"></span></label>
-        <input type="text" id="name" name="user_name" pattern="^(-?([A-Z].\s)?([A-Z][a-z]+)\s?)+([A-Z]'([A-Z][a-z]+))?$" placeholder="Enter a valid name" autofocus>
+        <label for="name" >Name:</label>
+        <input type="text" id="name" name="user_name" pattern="^(-?([A-Z].\s)?([A-Z][a-z]+)\s?)+([A-Z]'([A-Z][a-z]+))?$" tooltip="Hi there" autofocus>
 
         <label for="mail">Email:<span class="error"></span></label>
-        <input type="email" id="mail" name="user_email" pattern="([\w\.]+)@([\w\.]+)\.(\w+)" placeholder="myname@example.com">
+        <input type="email" id="mail" name="user_email" pattern="([\w\.]+)@([\w\.]+)\.(\w+)">
 
         <label for="title">Job Role</label>
         <select id="title" name="user_title">
@@ -34,13 +34,12 @@
           <option value="designer">Designer</option>
           <option value="student">Student</option>
           <option value="other">Other</option>
-          <input type="text" id="other-title" placeholder="Your Job Role">
+          <input type="text" id="other-title" placeholder="Your Job Role" pattern="^\w+ ?\w+$">
         </select>
       </fieldset>
 
       <fieldset class="shirt">
         <legend>T-Shirt Info</legend>
-        <span class="error"></span>
 
         <div>
           <label for="size">Size:</label>
@@ -76,7 +75,6 @@
 
       <fieldset class="activities">
         <legend>Register for Activities</legend>
-        <span class="error"></span>
 
         <label><input type="checkbox" name="all"> Main Conference — $200</label>
         <label><input type="checkbox" name="js-frameworks"> JavaScript Frameworks Workshop — Tuesday 9am-12pm, $100</label>
@@ -92,7 +90,7 @@
 
         <label for="payment">I'm going to pay with:</label>
         <select id="payment" name="user_payment">
-          <option value="select_method">Select Payment Method</option>
+          <!-- <option value="select_method">Select Payment Method</option> -->
           <option value="credit card" selected>Credit Card</option>
           <option value="paypal">PayPal</option>
           <option value="bitcoin">Bitcoin</option>
@@ -102,17 +100,17 @@
 
           <div class="col-6 col">
             <label for="cc-num">Card Number:</label>
-        	  <input id="cc-num" name="user_cc-num"type="text" pattern="^(?:\d[ -]*?){13,16}$" placeholder="">
+        	  <input id="cc-num" name="user_cc-num" type="text" pattern="^(?:\d[ -]*?){13,16}$">
           </div>
 
           <div class="col-3 col">
             <label for="zip">Zip Code:</label>
-            <input id="zip" name="user_zip" type="text" pattern="[0-9]{5}" placeholder="">
+            <input id="zip" name="user_zip" type="text" pattern="^\d{5}$">
           </div>
 
           <div class="col-3 col">
             <label for="cvv">CVV:</label>
-            <input id="cvv" name="user_cvv" type="text" pattern="[0-9]{3}" placeholder="">
+            <input id="cvv" name="user_cvv" type="text" pattern="^\d{3}$">
           </div>
 
           <label for="exp-month">Expiration Date:</label>

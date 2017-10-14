@@ -1,8 +1,8 @@
 const thisForm = document.querySelector('#register-form');
-const inputList = document.querySelectorAll('input');
 const fieldset = document.querySelector('.activities');
-const activitiesChecked = fieldset.querySelectorAll('input[type="checkbox"]');
+
 const submit = thisForm.querySelector('[type="submit"]');
+var isValid = false;
 // Disables / Enables checkboxes...
 function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
   if (checkedBox && checkedBoxName === thisName) {
@@ -144,54 +144,71 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
   });// activities EventListener
 }());// End of function
 
+//Using the closure method, with this function
+function eventListener() {
+  return function(e) {
+    let inputField = e.target;
+    let inputValue = e.target.value;
+    let inputPattern = e.target.pattern;
+    console.log(inputField);
+    console.log(inputValue);
+  }
+}
+
+//Using the closure method, with this function
+function isValidText(currentField, itsPattern, itsValue) {
+    var currentPattern = new RegExp(itsPattern);
+    var validValue = currentPattern.test(itsValue);
+    return validValue;
+}
+
+  const eventsChecked = fieldset.querySelectorAll('input[type="checkbox"]');
+  var validValue;
+  if (eventsChecked.length > 0) {
+    console.log("Check something");
+  } else {
+    console.log("you selected something");
+  }
+
+function isValidShirtPick(theField, pattern, theValue) {
+
+}
+function isValidPayment(theField, pattern, theValue) {
+
+}
+// function showHideError(theField, validField, validActivities, validShirt, ) {
+//   let label = theField.previousElementSibling;
+//   let oldLabelMessage = label.textContent;
+//   let newLabelMessage = errorMessage.name;
+//
+//   if (!validField) {
+//     theField.style.border = "2px solid rgba(255, 0, 0, 0.35)";
+//   } else {
+//     theField.style.border = "2px solid rgba(47, 236, 0, 0.58)";
+//   }
+//   if (!validActivities) {
+//     theField.style.color = "rgba(255, 0, 0, 0.35)";
+//   }
+// }
 //Form validation function...
 //Retrieve the current input field being worked on
 //Validate the value from the input field
-thisForm.addEventListener('input', (e) => {
+// function isSelectionValid(theField, theValue){}
+function isItChecked() {
+  const activitiesChecked = fieldset.querySelectorAll('input[type="checkbox"]');
+  if (!activitiesChecked.length > 0) {
+    let validActivities = false;
+    console.log(validActivities);
+  }
+}
+
+thisForm.addEventListener('change', (e) => {
   let inputField = e.target;
   let inputValue = e.target.value;
   let inputPattern = e.target.pattern;
+  console.log(isValidText(inputField, inputPattern, inputValue));
+});
 
-  //validation
-  if (inputPattern) {
-    let currentPattern = new RegExp(inputPattern);
-    let isValid = currentPattern.test(inputValue);
-    console.log(isValid);
-    //Produce appropriate color change or error message
-      if (!isValid || inputValue === "") {
-        showError(inputField)
-        inputField.style.border = "2px solid rgba(255, 0, 0, 0.35)";
-      } else {
-        inputField.style.border = "2px solid rgba(47, 236, 0, 0.58)";
-        console.log('No errors');
-      }
-  }
-
-
-})// End of Event listener
-
-function activitiesValidation() {
-  if (activitiesChecked.length > 0) {
-    return;
-  } else {
-    showError()
-  }
-}
-//errors
-function showError(field) {
-  let error = '<span>An error is here</span>';
-  let node = field.previousElementSibling;
-  node.textContent = "Whoops error here";
-}
-
-
-submit.addEventListener('submit', (e) => {
-  e.preventDefault();
-  let allValid = false;
-  if (allValid) {
-   console.log("Can't submit.");
-  }
-})
 
 
 //Name field can't be blank
