@@ -1,13 +1,15 @@
-const thisForm = document.querySelector('#register-form');
-const fieldset = document.querySelector('.activities');
+const thisForm = document.getElementById('register-form');
+const name = document.getElementById('name');
+const email = document.getElementById('mail');
+const creditCard = document.getElementById('cc-num');
+const zipCode = document.getElementById('zip');
+const cvv = document.getElementById('cvv');
 
-const submit = thisForm.querySelector('[type="submit"]');
-var isValid = false;
 // Disables / Enables checkboxes...
-function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
-  if (checkedBox && checkedBoxName === thisName) {
+function checkboxControl(checked, boxValue, thisName ,conflict) {
+  if (checked && boxValue === thisName) {
       conflict.disabled = true;
-  } else if (!checkedBox && checkedBoxName === thisName) {
+  } else if (!checked && boxValue === thisName) {
       conflict.disabled = false;
   }
 };// checkboxControl function
@@ -19,46 +21,46 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
     otherField: document.querySelector('#other-title'),
     creditCard: document.querySelector("#credit-card"),
     paypal: document.querySelector("#paypal"),
-    bitcoin: document.querySelector("#bitcoin")
+    bitcoin: document.querySelector("#bitcoin"),
+    error: document.querySelectorAll(".error")
   };
   //Hides the specified form elements
   for (let nodeValue in node) {
-    node[nodeValue].style.display = "none";
+    node[nodeValue].className = "is-hidden";
   };
 
   //Show and hide input field for the option "other"
   const jobRole = document.querySelector('#title');
   jobRole.addEventListener('change', function(e) {
     if (e.target.value === "other") {
-      node.otherField.style.display = "block";
+      node.otherField.className = "inherit";
     } else {
-        node.otherField.style.display = "none";
+        node.otherField.className = "is-hidden";
         node.otherField.value = "";
     }
   });
 
   //Control display when payment option is selected
-  node.creditCard.style.display = 'inherit';
+  node.creditCard.className = "inherit";
   //Credit-card shows by default
   const payment = document.querySelector("#payment");
   payment.addEventListener('change', function() {
     let value = payment.value;
     if (value === "paypal") {
-        node.paypal.style.display = 'inherit';
-        node.creditCard.style.display = 'none';
-        node.bitcoin.style.display = 'none';
+        node.paypal.className = 'inherit';
+        node.creditCard.className = 'is-hidden';
+        node.bitcoin.className = 'is-hidden';
     } else if (value === "bitcoin") {
-        node.bitcoin.style.display = 'inherit';
-        node.paypal.style.display = 'none';
-        node.creditCard.style.display = 'none';
+        node.bitcoin.className = 'inherit';
+        node.paypal.className = 'is-hidden';
+        node.creditCard.className = 'is-hidden';
     } else {
-      node.bitcoin.style.display = 'none';
-      node.paypal.style.display = 'none';
-      node.creditCard.style.display = 'inherit';
+      node.bitcoin.className = 'is-hidden';
+      node.paypal.className = 'is-hidden';
+      node.creditCard.className = 'inherit';
     }
   });
 }());
-
 // ”T-Shirt Info” function...
 (function() {
   const design = document.querySelector('#design');
@@ -93,12 +95,11 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
         }
     }); //”T-Shirt Info” EventListener
 }()); //Immediately invoked function
-
 // Activities function...
 (function() {
   // const labels = fieldset.querySelectorAll('label');
   var runningTotal = 0;
-
+  const fieldset = document.getElementById('activities');
   const priceDiv = document.createElement('div');
   priceDiv.id = "running-total";
   fieldset.appendChild(priceDiv);
@@ -106,15 +107,16 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
   fieldset.addEventListener('change', function(e) {
     const checkbox = e.target;
     const isChecked = checkbox.checked;
-    const boxName = checkbox.name;
-    const boxValue = checkbox.parentNode.textContent;
+    const itsName = checkbox.name;
+    const itsValue = checkbox.value;
+    console.log("Checkbox value " + itsValue);
 
     // Tracks the running total...
       // If box is checked || unchecked and the main activity
       // If box is checked || unchecked
-    if (isChecked && boxName === "all") {
+    if (isChecked && itsValue === "all") {
       runningTotal += 200;
-    } else if (!isChecked && boxName === "all") {
+    } else if (!isChecked && itsValue === "all") {
       runningTotal -= 200;
     } else {
       if (isChecked) {
@@ -127,97 +129,72 @@ function checkboxControl(checkedBox, checkedBoxName, thisName ,conflict) {
 
     // Stores the activities, would like this be be more dynamic
     let event = {
-      all: fieldset.querySelector('input[name="all"]'),
-      jsFrameworks: fieldset.querySelector('input[name="js-frameworks"]'),
-      jsLibs: fieldset.querySelector('input[name="js-libs"]'),
-      express: fieldset.querySelector('input[name="express"]'),
-      node: fieldset.querySelector('input[name="node"]'),
-      buildTools: fieldset.querySelector('input[name="build-tools"]'),
-      npm: fieldset.querySelector('input[name="npm"]')
+      all: fieldset.querySelector('input[value="all"]'),
+      jsFrameworks: fieldset.querySelector('input[value="js-frameworks"]'),
+      jsLibs: fieldset.querySelector('input[value="js-libs"]'),
+      express: fieldset.querySelector('input[value="express"]'),
+      node: fieldset.querySelector('input[value="node"]'),
+      buildTools: fieldset.querySelector('input[value="build-tools"]'),
+      npm: fieldset.querySelector('input[value="npm"]')
     }
     // Prevent selection of activities that conflict
     // checkedBox, checkedBoxName, thisName ,conflict
-    checkboxControl(isChecked, boxName, "js-frameworks", event.express);
-    checkboxControl(isChecked, boxName, "express", event.jsFrameworks);
-    checkboxControl(isChecked, boxName, "js-libs", event.node);
-    checkboxControl(isChecked, boxName, "node", event.jsLibs);
+    checkboxControl(isChecked, itsValue, "js-frameworks", event.express);
+    checkboxControl(isChecked, itsValue, "express", event.jsFrameworks);
+    checkboxControl(isChecked, itsValue, "js-libs", event.node);
+    checkboxControl(isChecked, itsValue, "node", event.jsLibs);
   });// activities EventListener
 }());// End of function
 
-//Using the closure method, with this function
-function eventListener() {
+// function validateInput(node) {
+//   let inputField = node.target;
+//   let inputValue = node.target.value;
+//   let inputPattern = node.target.pattern;
+//   var spanElement = inputField.previousElementSibling;
+//
+//   var currentPattern = new RegExp(inputPattern);
+//   var test = currentPattern.test(inputValue);
+//
+//   if (!test) {
+//     spanElement.className = "error";
+//     console.log(test);
+//   } else {
+//     test = "valid"
+//     spanElement.className = "error is-hidden";
+//     console.log(test);
+//   }
+// }
+
+function inputValidation(pattern, value) {
+  var currentPattern = new RegExp(pattern);
+  var test = currentPattern.test(value);
+  return test;
+}
+
+function showHideInputError(testValue, errorNode) {
+  if (!testValue) {
+    errorNode.className = "error";
+    console.log(testValue);
+  } else {
+    testValue = "valid"
+    errorNode.className = "error is-hidden";
+    console.log(testValue);
+  }
+}
+
+function createListener(validatorFunction, errorFunction) {
   return function(e) {
     let inputField = e.target;
     let inputValue = e.target.value;
     let inputPattern = e.target.pattern;
-    console.log(inputField);
-    console.log(inputValue);
+    var test = validatorFunction(inputPattern, inputValue);
+    var spanElement = inputField.previousElementSibling;
+    errorFunction(test, spanElement);
   }
 }
 
-//Using the closure method, with this function
-function isValidText(currentField, itsPattern, itsValue) {
-    var currentPattern = new RegExp(itsPattern);
-    var validValue = currentPattern.test(itsValue);
-    return validValue;
-}
-
-  const eventsChecked = fieldset.querySelectorAll('input[type="checkbox"]');
-  var validValue;
-  if (eventsChecked.length > 0) {
-    console.log("Check something");
-  } else {
-    console.log("you selected something");
-  }
-
-function isValidShirtPick(theField, pattern, theValue) {
-
-}
-function isValidPayment(theField, pattern, theValue) {
-
-}
-// function showHideError(theField, validField, validActivities, validShirt, ) {
-//   let label = theField.previousElementSibling;
-//   let oldLabelMessage = label.textContent;
-//   let newLabelMessage = errorMessage.name;
-//
-//   if (!validField) {
-//     theField.style.border = "2px solid rgba(255, 0, 0, 0.35)";
-//   } else {
-//     theField.style.border = "2px solid rgba(47, 236, 0, 0.58)";
-//   }
-//   if (!validActivities) {
-//     theField.style.color = "rgba(255, 0, 0, 0.35)";
-//   }
-// }
-//Form validation function...
-//Retrieve the current input field being worked on
-//Validate the value from the input field
-// function isSelectionValid(theField, theValue){}
-function isItChecked() {
-  const activitiesChecked = fieldset.querySelectorAll('input[type="checkbox"]');
-  if (!activitiesChecked.length > 0) {
-    let validActivities = false;
-    console.log(validActivities);
-  }
-}
-
-thisForm.addEventListener('change', (e) => {
-  let inputField = e.target;
-  let inputValue = e.target.value;
-  let inputPattern = e.target.pattern;
-  console.log(isValidText(inputField, inputPattern, inputValue));
-});
-
-
-
-//Name field can't be blank
-//validly formatted e-mail address: dave@teamtreehouse.com
-//Must select at least one checkbox under the "Register for Activities" section of the form.
-//If payment option is "Credit Card," user must supply:
-  //a credit card number,
-  //a zip code,
-  //a 3 number CVV value before the form can be submitted.
-//Credit card field should only accept a number between 13 and 16 digits
-//The zipcode field should accept a 5-digit number
-//The CVV should only accept a number that is exactly 3 digits long
+email.addEventListener('input', createListener(inputValidation, showHideInputError), true);
+name.addEventListener('input', createListener(inputValidation, showHideInputError), true);
+creditCard.addEventListener('input', createListener(inputValidation, showHideInputError), true);
+zipCode.addEventListener('input', createListener(inputValidation, showHideInputError), true);
+cvv.addEventListener('input', createListener(inputValidation, showHideInputError), true);
