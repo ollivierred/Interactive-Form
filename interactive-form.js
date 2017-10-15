@@ -1,9 +1,29 @@
+// function validateInput(node) {
+//   let inputField = node.target;
+//   let inputValue = node.target.value;
+//   let inputPattern = node.target.pattern;
+//   var spanElement = inputField.previousElementSibling;
+//
+//   var currentPattern = new RegExp(inputPattern);
+//   var test = currentPattern.test(inputValue);
+//
+//   if (!test) {
+//     spanElement.className = "error";
+//     console.log(test);
+//   } else {
+//     test = "valid"
+//     spanElement.className = "error is-hidden";
+//     console.log(test);
+//   }
+// }
+
 const thisForm = document.getElementById('register-form');
 const name = document.getElementById('name');
 const email = document.getElementById('mail');
 const creditCard = document.getElementById('cc-num');
 const zipCode = document.getElementById('zip');
 const cvv = document.getElementById('cvv');
+
 
 // Disables / Enables checkboxes...
 function checkboxControl(checked, boxValue, thisName ,conflict) {
@@ -61,6 +81,7 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
     }
   });
 }());
+
 // ”T-Shirt Info” function...
 (function() {
   const design = document.querySelector('#design');
@@ -95,6 +116,7 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
         }
     }); //”T-Shirt Info” EventListener
 }()); //Immediately invoked function
+
 // Activities function...
 (function() {
   // const labels = fieldset.querySelectorAll('label');
@@ -146,30 +168,13 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
   });// activities EventListener
 }());// End of function
 
-// function validateInput(node) {
-//   let inputField = node.target;
-//   let inputValue = node.target.value;
-//   let inputPattern = node.target.pattern;
-//   var spanElement = inputField.previousElementSibling;
-//
-//   var currentPattern = new RegExp(inputPattern);
-//   var test = currentPattern.test(inputValue);
-//
-//   if (!test) {
-//     spanElement.className = "error";
-//     console.log(test);
-//   } else {
-//     test = "valid"
-//     spanElement.className = "error is-hidden";
-//     console.log(test);
-//   }
-// }
 
 function inputValidation(pattern, value) {
   var currentPattern = new RegExp(pattern);
   var test = currentPattern.test(value);
   return test;
 }
+
 
 function showHideInputError(testValue, errorNode) {
   if (!testValue) {
@@ -182,6 +187,7 @@ function showHideInputError(testValue, errorNode) {
   }
 }
 
+
 function createListener(validatorFunction, errorFunction) {
   return function(e) {
     let inputField = e.target;
@@ -192,6 +198,7 @@ function createListener(validatorFunction, errorFunction) {
     errorFunction(test, spanElement);
   }
 }
+
 
 email.addEventListener('input', createListener(inputValidation, showHideInputError), true);
 name.addEventListener('input', createListener(inputValidation, showHideInputError), true);
