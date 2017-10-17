@@ -1,29 +1,20 @@
-// function validateInput(node) {
-//   let inputField = node.target;
-//   let inputValue = node.target.value;
-//   let inputPattern = node.target.pattern;
-//   var spanElement = inputField.previousElementSibling;
-//
-//   var currentPattern = new RegExp(inputPattern);
-//   var test = currentPattern.test(inputValue);
-//
-//   if (!test) {
-//     spanElement.className = "error";
-//     console.log(test);
-//   } else {
-//     test = "valid"
-//     spanElement.className = "error is-hidden";
-//     console.log(test);
-//   }
-// }
+/*
+  INDEX |ELEMENT              |REQUIRED
+    0    elements.name         Yes
+    1    elements.email        Yes
+    2    elements.job-role     No
+    3    elements.t-shirt      Yes
+    4    elements.activities   Yes
+    5    elements.payment      If credit-card selected
+    6      elements.cc-num     Yes
+    7      elements.zip-code   Yes
+    8      elements.cvv        Yes
+*/
 
-const thisForm = document.getElementById('register-form');
-const name = document.getElementById('name');
-const email = document.getElementById('mail');
-const creditCard = document.getElementById('cc-num');
-const zipCode = document.getElementById('zip');
-const cvv = document.getElementById('cvv');
-
+//job-role "other" field pattern ="^\w+ ?\w+$"
+//credit-card number pattern ="^(?:\d[ -]*?){13,16}$"
+//zip-code pattern ="^\d{5}$"
+//cvv pattern ="^\d{3}$"
 
 // Disables / Enables checkboxes...
 function checkboxControl(checked, boxValue, thisName ,conflict) {
@@ -33,6 +24,7 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
       conflict.disabled = false;
   }
 };// checkboxControl function
+
 
 // Show / Hide function...
 (function() {
@@ -61,7 +53,7 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
   });
 
   //Control display when payment option is selected
-  node.creditCard.className = "inherit";
+  // node.creditCard.className = "inherit";
   //Credit-card shows by default
   const payment = document.querySelector("#payment");
   payment.addEventListener('change', function() {
@@ -119,9 +111,8 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
 
 // Activities function...
 (function() {
-  // const labels = fieldset.querySelectorAll('label');
   var runningTotal = 0;
-  const fieldset = document.getElementById('activities');
+  const fieldset = document.querySelector('.activities');
   const priceDiv = document.createElement('div');
   priceDiv.id = "running-total";
   fieldset.appendChild(priceDiv);
@@ -129,10 +120,7 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
   fieldset.addEventListener('change', function(e) {
     const checkbox = e.target;
     const isChecked = checkbox.checked;
-    const itsName = checkbox.name;
     const itsValue = checkbox.value;
-    console.log("Checkbox value " + itsValue);
-
     // Tracks the running total...
       // If box is checked || unchecked and the main activity
       // If box is checked || unchecked
@@ -169,39 +157,95 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
 }());// End of function
 
 
-function inputValidation(pattern, value) {
-  var currentPattern = new RegExp(pattern);
-  var test = currentPattern.test(value);
-  return test;
+function isRequired(theForm, objName) {
+  for (let i = 0; i < theForm.length; i++) {
+    if (theForm[i].className === "required") {
+      objName[theForm[i].name] = theForm[i];
+    }
+  }//End of for loop
+}//End of required validation
+
+function isEmpty(el) {
+  return !el.value;
+}
+function isDefault(el) {
+  return el.value === "default";
+}
+function getElementType(el) {
+  var type = el.type;
+  return type;
+}
+function getElementName(el) {
+  var name = el.name;
+  return name;
 }
 
-
-function showHideInputError(testValue, errorNode) {
-  if (!testValue) {
-    errorNode.className = "error";
-    console.log(testValue);
-  } else {
-    testValue = "valid"
-    errorNode.className = "error is-hidden";
-    console.log(testValue);
+var validateBy = {
+  txt: function(el) {
+    return /^(-?([A-Z].\s)?([A-Z][a-z]+)\s?)+([A-Z]'([A-Z][a-z]+))?$/.test(el);
+  },
+  email: function(el) {
+    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(el);
   }
 }
 
+function validateShirtInfo(el) {
+  // return el.value;
+}
 
-function createListener(validatorFunction, errorFunction) {
-  return function(e) {
-    let inputField = e.target;
-    let inputValue = e.target.value;
-    let inputPattern = e.target.pattern;
-    var test = validatorFunction(inputPattern, inputValue);
-    var spanElement = inputField.previousElementSibling;
-    errorFunction(test, spanElement);
+function validatePayment(fieldOne, fieldTwo, fieldThree) {
+  var cardNumber = /^(?:\d[ -]*?){13,16}$/.test(fieldOne);
+  var zip = /^\d{5}$/.test(fieldTwo);
+  var cvv = /^\d{3}$/.test(fieldThree);
+}
+
+function validateActivities(checklist) {
+  var valid;
+  var isChecked = 0;
+  for (let i = 0; i < checklist.length; i++) {
+    if(checklist[i].checked) {
+      isChecked ++;
+    }
   }
+  return isChecked > 0 ? valid = true : valid = false;
 }
 
 
-email.addEventListener('input', createListener(inputValidation, showHideInputError), true);
-name.addEventListener('input', createListener(inputValidation, showHideInputError), true);
-creditCard.addEventListener('input', createListener(inputValidation, showHideInputError), true);
-zipCode.addEventListener('input', createListener(inputValidation, showHideInputError), true);
-cvv.addEventListener('input', createListener(inputValidation, showHideInputError), true);
+(function() {
+  const form = document.register;
+  const activitiesList = document.register.activities;
+  //Stores form fields designated as required
+  var required = {};
+  //Add validation boolean to valid object
+  var valid = {};
+  var isFormValid = false;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    //Checks when fields are required and stores each in the obj "required"
+    isRequired(form, required);
+
+    for (var e in required) {
+      let element = required[e]
+      // console.log(element);
+      let type = getElementType(element);
+      let name = getElementName(element);
+
+      if (type === "text") {
+        valid.name = validateBy.txt(element);
+      }
+      if ( type === "email") {
+        valid.email = validateBy.email(element);
+      }
+      if (type === "select-one" && name === "user_design") {
+        valid.shirtInfo = !isDefault(element);
+      }
+      if (type === "select-one" && name === "user_payment") {
+        valid.payment = !isDefault(element);
+      }
+    }
+    //Custom validation
+    valid.checklist = validateActivities(activitiesList);
+    console.log(valid);
+  }, false);
+}());
