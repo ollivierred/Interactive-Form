@@ -1,3 +1,4 @@
+
 /*
   INDEX |ELEMENT              |REQUIRED
     0    elements.name         Yes
@@ -15,6 +16,8 @@
 //credit-card number pattern ="^(?:\d[ -]*?){13,16}$"
 //zip-code pattern ="^\d{5}$"
 //cvv pattern ="^\d{3}$"
+
+//**Note: boolean value is not a string... DOn't put quotes around it.
 
 // Disables / Enables checkboxes...
 function checkboxControl(checked, boxValue, thisName ,conflict) {
@@ -157,37 +160,34 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
 }());// End of function
 
 
-function isRequired(theForm, objName) {
-  for (let i = 0; i < theForm.length; i++) {
-    if (theForm[i].className === "required") {
-      objName[theForm[i].name] = theForm[i];
-    }
-  }//End of for loop
-}//End of required validation
 
-function isEmpty(el) {
-  return !el.value;
-}
+
+
+
 function isDefault(el) {
   return el.value === "default";
 }
-function getElementType(el) {
-  var type = el.type;
-  return type;
-}
+
+
 function getElementName(el) {
   var name = el.name;
   return name;
 }
 
+function setErrorMessage(el) {
+
+}
+
 var validateBy = {
-  txt: function(el) {
+  name: function(el) {
     return /^(-?([A-Z].\s)?([A-Z][a-z]+)\s?)+([A-Z]'([A-Z][a-z]+))?$/.test(el);
+
   },
   email: function(el) {
     return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(el);
   }
 }
+
 
 function validateShirtInfo(el) {
   // return el.value;
@@ -210,6 +210,39 @@ function validateActivities(checklist) {
   return isChecked > 0 ? valid = true : valid = false;
 }
 
+function validateElementByType(el) {
+  if (!el.value === "") {
+    return true;
+  }
+  var type = el.getAttribute('type');
+  //The typeof operator returns the type of a variable or an expression
+  if (typeof validateBy[type] === 'function') {
+    return validateBy[type](el);
+  } else {
+    return true;
+  }
+}
+
+function isEmpty(field) {
+  if (field === "") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function isRequired(formField) {
+  if (formField.className === "required") {
+    var valid = isEmpty(formField);
+    if (valid === true) {
+      return valid = false;
+    } else {
+      return valid = true;
+    }
+  }
+}//End of required validation
+
+
 
 (function() {
   const form = document.register;
@@ -218,34 +251,47 @@ function validateActivities(checklist) {
   var required = {};
   //Add validation boolean to valid object
   var valid = {};
+  var validState = false;
   var isFormValid = false;
+
+
+  // valid.name = isEmpty(element) && validateElementByType(element);
+  // valid.email = isEmpty(element) && validateElementByType(element);
+  // if ( type === "email") {
+  //   valid.email = validateBy.emailTest(element);
+  // }
+  // if (type === "select-one" && name === "user_design") {
+  //   valid.shirtInfo = !isDefault(element);
+  // }
+  // if (type === "select-one" && name === "user_payment") {
+  //   valid.payment = !isDefault(element);
+  //   valid.payment = !
+  // }
+  //Custom validation
+  // valid.checklist = validateActivities(activitiesList);
+  // console.log(valid);
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    //Checks when fields are required and stores each in the obj "required"
-    isRequired(form, required);
 
-    for (var e in required) {
-      let element = required[e]
-      // console.log(element);
-      let type = getElementType(element);
-      let name = getElementName(element);
-
-      if (type === "text") {
-        valid.name = validateBy.txt(element);
-      }
-      if ( type === "email") {
-        valid.email = validateBy.email(element);
-      }
-      if (type === "select-one" && name === "user_design") {
-        valid.shirtInfo = !isDefault(element);
-      }
-      if (type === "select-one" && name === "user_payment") {
-        valid.payment = !isDefault(element);
-      }
+    for (let i = 0; i < form.length; i++) {
+      validState = isRequired(form[i]);
+      valid[form[i].id] = validState;
     }
-    //Custom validation
-    valid.checklist = validateActivities(activitiesList);
     console.log(valid);
-  }, false);
+
+    for (var field in valid) {
+      console.log(valid[field]);
+      // if (!valid[field]) {
+      //   isFormValid = false;
+      //   break;
+      // } else {
+      //   isFormValid = true;
+      // }
+    }
+
+    if (!isFormValid) {
+      e.preventDefault();
+    }
+  });
 }());
