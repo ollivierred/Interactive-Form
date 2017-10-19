@@ -1,22 +1,4 @@
 
-/*
-  INDEX |ELEMENT              |REQUIRED
-    0    elements.name         Yes
-    1    elements.email        Yes
-    2    elements.job-role     No
-    3    elements.t-shirt      Yes
-    4    elements.activities   Yes
-    5    elements.payment      If credit-card selected
-    6      elements.cc-num     Yes
-    7      elements.zip-code   Yes
-    8      elements.cvv        Yes
-*/
-
-//job-role "other" field pattern ="^\w+ ?\w+$"
-//credit-card number pattern ="^(?:\d[ -]*?){13,16}$"
-//zip-code pattern ="^\d{5}$"
-//cvv pattern ="^\d{3}$"
-
 //**Note: boolean value is not a string... DOn't put quotes around it.
 
 // Disables / Enables checkboxes...
@@ -27,7 +9,6 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
       conflict.disabled = false;
   }
 };// checkboxControl function
-
 
 // Show / Hide function...
 (function() {
@@ -215,25 +196,6 @@ var validateBy = {
   }
 }
 
-function validateFieldBy(field) {
-  if (field.value === false) {
-    var valueMissing = false;
-    return !valueMissing;
-  }
-  var id = field.id;
-  console.log(id);
-  //The typeof operator returns the type of a variable or an expression
-  if (id === 'name') {
-    return validateBy[id](field);
-  } else if (id === 'email') {
-      return validateBy[id](field);
-  } else if (id === 'design') {
-      return validateBy[id](field);
-  } else if (id === 'payment') {
-      return validateBy[id](field);
-  }
-}
-
 function isEmpty(field) {
   var valueMissing;
   if (field.value === "") {
@@ -257,6 +219,25 @@ function isRequired(field) {
   }
 }//End of required validation
 
+function validateFieldBy(field) {
+  if (field.value === false) {
+    var valueMissing = false;
+    return !valueMissing;
+  }
+  var id = field.id;
+  console.log(id);
+  //The typeof operator returns the type of a variable or an expression
+  if (id === 'name') return validateBy[id](field);
+  if (id === 'email') return validateBy[id](field);
+  if (id === 'design') return validateBy[id](field);
+  if (id === 'payment') return validateBy[id](field)
+  if (id === 'cc-num') return validateBy[id](field);
+  if (id === 'zip') return validateBy[id](field);
+  if (id === 'cvv') return validateBy[id](field);
+  // if (id === 'payment') return validateBy[id](field);
+}
+
+
 (function() {
   const form = document.register;
   const activitiesList = document.register.activities;
@@ -277,12 +258,16 @@ function isRequired(field) {
   // }, true);
 
   form.addEventListener('submit', (e) => {
-    e.preventDefault();
 
     for (let i = 0; i < form.length; i++) {
       if (form[i].className === "required") {
         validState = !isEmpty(form[i]);
         validState = validateFieldBy(form[i]);
+        if (validState === false) {
+          form[i].style.border = "2px solid firebrick";
+        } else {
+          form[i].style.border = "inherit";
+        }
         valid[form[i].id] = validState;
       }
     }

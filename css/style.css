@@ -116,13 +116,13 @@ button:hover {
 /* =================================
   :valid, :invalid Styles
 ==================================== */
-input:invalid {
+/*input:invalid {
   outline: 2px solid red;
-}
+}*/
 
-input:valid {
+/*input:valid {
   outline: inherit;
-}
+}*/
 
 /* =================================
   Page Styles
