@@ -1,5 +1,113 @@
 
 //**Note: boolean value is not a string... DOn't put quotes around it.
+var validateBy = {
+  "name": function(field) {
+    return /^[a-zA-Z ]{2,30}$/.test(field.value);
+  },
+  "email": function(field) {
+    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(field.value);
+  },
+  "design": function(field) {
+    if (field.value === "default") {
+      return false;
+    } else {
+      return true;
+    }
+  },
+  "payment": function(field) {
+    if (field.value === "select_method") {
+      return false;
+    } else if (field.value === "credit card") {
+      var inputField = field.parentNode.querySelectorAll('input');
+      for (let i = 0; i < inputField.length; i++) {
+        inputField[i].className = "required";
+      }
+      return false;
+      console.log(inputField);
+    } else {
+      return true;
+    }
+  },
+  "cc-num": function(field) {
+    return /^(?:\d[ -]*?){13,16}$/.test(field.value);
+  },
+  "zip": function(field) {
+    return /^\d{5}$/.test(field.value);
+  },
+  "cvv": function(field) {
+    return /^\d{3}$/.test(field.value);
+  }
+}
+
+function validateActivities(checklist) {
+  var checklist = document.querySelectorAll('.activities input');
+  var isChecked = 0;
+  for (let i = 0; i < checklist.length; i++) {
+    //Counts all checked boxes
+    if (checklist[i].checked) {
+      isChecked++
+    }
+  }
+  return isChecked > 0 ? valid = true : valid = false;
+}
+
+function isEmpty(field) {
+  var valueMissing;
+  if (field.value === "") {
+    valueMissing = true;
+    // setErrorMessage(valueMissing, field);
+    return valueMissing;
+  }
+}
+
+function setErrorMessage(errorType, field) {
+  // valueMissing = false;
+  // valueMismatch = false;
+  // valueTooShort = false;
+  // valueTooLong = false;
+
+  if (valueMissing && field.id === "name") {
+    let error = field.previousElementSibling;
+    error.style.display = "block";
+    var message = "Please fill out this field.";
+    field.style.border = "2px solid firebrick";
+  } else {
+    field.style.border = "inherit";
+  }
+}
+
+function isRequired(field) {
+  if (field.className === "required") {
+    var error;
+    if (field.value === "") {
+      error = field.previousElementSibling;
+      error.className = "error";
+      return error.innerHTML = 'Whoops error here.';
+    } else {
+      error = field.previousElementSibling;
+      error.className = "error is-hidden";
+      return valid = true;
+    }
+  }
+}//End of required validation
+
+function validateFieldBy(field) {
+  if (field.value === false) {
+    var valueMissing = false;
+    return !valueMissing;
+  }
+  var id = field.id;
+  console.log(id);
+  //Retrieves a validation function based on the field's "id"
+  //I feel pretty good about this one
+  if (id === 'name') return validateBy[id](field);
+  if (id === 'email') return validateBy[id](field);
+  if (id === 'design') return validateBy[id](field);
+  if (id === 'payment') return validateBy[id](field)
+  if (id === 'cc-num') return validateBy[id](field);
+  if (id === 'zip') return validateBy[id](field);
+  if (id === 'cvv') return validateBy[id](field);
+}
 
 // Disables / Enables checkboxes...
 function checkboxControl(checked, boxValue, thisName ,conflict) {
@@ -12,48 +120,51 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
 
 // Show / Hide function...
 (function() {
+  const payment = document.querySelector("#payment");
   //Holds the list of elements to be hidden
-  let node = {
+  var field = {
     otherField: document.querySelector('#other-title'),
     creditCard: document.querySelector("#credit-card"),
     paypal: document.querySelector("#paypal"),
-    bitcoin: document.querySelector("#bitcoin"),
-    error: document.querySelectorAll(".error")
-  };
+    bitcoin: document.querySelector("#bitcoin")
+  }
   //Hides the specified form elements
-  for (let nodeValue in node) {
-    node[nodeValue].className = "is-hidden";
+  for (var el in field) {
+    field[el].style.display = "none";
   };
+  // Credit-card shows by default
+  field.creditCard.style.display = 'inherit';
 
   //Show and hide input field for the option "other"
   const jobRole = document.querySelector('#title');
   jobRole.addEventListener('change', function(e) {
     if (e.target.value === "other") {
-      node.otherField.className = "inherit";
+      field.otherField.style.display = "inherit";
     } else {
-        node.otherField.className = "is-hidden";
-        node.otherField.value = "";
+        field.otherField.style.display = "none";
+        field.otherField.value = "";
     }
   });
 
   //Control display when payment option is selected
-  // node.creditCard.className = "inherit";
-  //Credit-card shows by default
-  const payment = document.querySelector("#payment");
   payment.addEventListener('change', function() {
     let value = payment.value;
     if (value === "paypal") {
-        node.paypal.className = 'inherit';
-        node.creditCard.className = 'is-hidden';
-        node.bitcoin.className = 'is-hidden';
+        field.paypal.style.display = 'inherit';
+        field.creditCard.style.display = 'none';
+        field.bitcoin.style.display = 'none';
     } else if (value === "bitcoin") {
-        node.bitcoin.className = 'inherit';
-        node.paypal.className = 'is-hidden';
-        node.creditCard.className = 'is-hidden';
+        field.bitcoin.style.display = 'inherit';
+        field.paypal.style.display = 'none';
+        field.creditCard.style.display = 'none';
+    } else if (value === "select_method"){
+      field.bitcoin.style.display = 'none';
+      field.paypal.style.display = 'none';
+      field.creditCard.style.display = 'none';
     } else {
-      node.bitcoin.className = 'is-hidden';
-      node.paypal.className = 'is-hidden';
-      node.creditCard.className = 'inherit';
+      field.creditCard.style.display = 'inherit';
+      field.bitcoin.style.display = 'none';
+      field.paypal.style.display = 'none';
     }
   });
 }());
@@ -141,103 +252,6 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
 }());// End of function
 
 
-function setErrorMessage(el) {
-
-}
-
-function validateActivities(checklist) {
-  var checklist = document.querySelectorAll('.activities input');
-  console.log();
-  var isChecked = 0;
-  for (let i = 0; i < checklist.length; i++) {
-    if(checklist[i].checked) {
-      isChecked ++;
-    }
-  }
-  return isChecked > 0 ? valid = true : valid = false;
-}
-
-var validateBy = {
-  "name": function(field) {
-    return /^[a-zA-Z ]{2,30}$/.test(field.value);
-  },
-  "email": function(field) {
-    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(field.value);
-  },
-  "design": function(field) {
-    if (field.value === "default") {
-      return false;
-    } else {
-      return true;
-    }
-  },
-  "payment": function(field) {
-    if (field.value === "default") {
-      return false;
-    } else if (field.value === "credit card") {
-      var inputField = field.parentNode.querySelectorAll('input');
-      for (let i = 0; i < inputField.length; i++) {
-        inputField[i].className = "required";
-      }
-      return false;
-      console.log(inputField);
-    } else {
-      return true;
-    }
-  },
-  "cc-num": function(field) {
-    return /^(?:\d[ -]*?){13,16}$/.test(field.value);
-  },
-  "zip": function(field) {
-    return /^\d{5}$/.test(field.value);
-  },
-  "cvv": function(field) {
-    return /^\d{3}$/.test(field.value);
-  }
-}
-
-function isEmpty(field) {
-  var valueMissing;
-  if (field.value === "") {
-    valueMissing = true;
-    return valueMissing;
-  }
-}
-
-function isRequired(field) {
-  if (field.className === "required") {
-    var error;
-    if (field.value === "") {
-      error = field.previousElementSibling;
-      error.className = "error";
-      return error.innerHTML = 'Whoops error here.';
-    } else {
-      error = field.previousElementSibling;
-      error.className = "error is-hidden";
-      return valid = true;
-    }
-  }
-}//End of required validation
-
-function validateFieldBy(field) {
-  if (field.value === false) {
-    var valueMissing = false;
-    return !valueMissing;
-  }
-  var id = field.id;
-  console.log(id);
-  //The typeof operator returns the type of a variable or an expression
-  if (id === 'name') return validateBy[id](field);
-  if (id === 'email') return validateBy[id](field);
-  if (id === 'design') return validateBy[id](field);
-  if (id === 'payment') return validateBy[id](field)
-  if (id === 'cc-num') return validateBy[id](field);
-  if (id === 'zip') return validateBy[id](field);
-  if (id === 'cvv') return validateBy[id](field);
-  // if (id === 'payment') return validateBy[id](field);
-}
-
-
 (function() {
   const form = document.register;
   const activitiesList = document.register.activities;
@@ -246,16 +260,29 @@ function validateFieldBy(field) {
   var validState = true;
   var isFormValid = false;
 
-  // document.addEventListener('blur', (e) => {
-  //   // Don't validate submits, buttons, file and reset inputs, and disabled fields return;
-  //   if (e.target.type === 'submit' || e.target.type === 'button' || e.target.type === 'fieldset' ) {
-  //     return;
-  //   } else {
-  //     // Collect them
-  //     var valid = e.target;
-  //   }
-  //   console.log(valid);
-  // }, true);
+  document.addEventListener('blur', (e) => {
+    // Don't validate submits, buttons, file and reset inputs, and disabled fields return;
+    if (e.target.type === 'submit' || e.target.type === 'button' || e.target.type === 'fieldset' ) {
+      return;
+    } else {
+      valueMissing = isEmpty(e.target);
+      console.log(validState);
+      if (valueMissing && e.target.id === "name" || e.target.id === "email") {
+        var error = e.target.previousElementSibling;
+        var message = "Please fill out this field.";
+        error.innerHTML = message;
+        error.style.display = "block";
+        e.target.style.border = "2px solid firebrick";
+      } else {
+        var error = e.target.previousElementSibling;
+        error.style.display = "none";
+        e.target.style.border = "inherit";
+      }
+      // Collect them
+      var valid = e.target;
+    }
+    console.log(valid);
+  }, true);
 
   form.addEventListener('submit', (e) => {
 
@@ -263,11 +290,6 @@ function validateFieldBy(field) {
       if (form[i].className === "required") {
         validState = !isEmpty(form[i]);
         validState = validateFieldBy(form[i]);
-        if (validState === false) {
-          form[i].style.border = "2px solid firebrick";
-        } else {
-          form[i].style.border = "inherit";
-        }
         valid[form[i].id] = validState;
       }
     }
