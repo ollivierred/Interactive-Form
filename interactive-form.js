@@ -160,47 +160,13 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
 }());// End of function
 
 
-
-
-
-
-function isDefault(el) {
-  return el.value === "default";
-}
-
-
-function getElementName(el) {
-  var name = el.name;
-  return name;
-}
-
 function setErrorMessage(el) {
 
 }
 
-var validateBy = {
-  name: function(el) {
-    return /^(-?([A-Z].\s)?([A-Z][a-z]+)\s?)+([A-Z]'([A-Z][a-z]+))?$/.test(el);
-
-  },
-  email: function(el) {
-    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(el);
-  }
-}
-
-
-function validateShirtInfo(el) {
-  // return el.value;
-}
-
-function validatePayment(fieldOne, fieldTwo, fieldThree) {
-  var cardNumber = /^(?:\d[ -]*?){13,16}$/.test(fieldOne);
-  var zip = /^\d{5}$/.test(fieldTwo);
-  var cvv = /^\d{3}$/.test(fieldThree);
-}
-
 function validateActivities(checklist) {
-  var valid;
+  var checklist = document.querySelectorAll('.activities input');
+  console.log();
   var isChecked = 0;
   for (let i = 0; i < checklist.length; i++) {
     if(checklist[i].checked) {
@@ -210,78 +176,122 @@ function validateActivities(checklist) {
   return isChecked > 0 ? valid = true : valid = false;
 }
 
-function validateElementByType(el) {
-  if (!el.value === "") {
-    return true;
+var validateBy = {
+  "name": function(field) {
+    return /^[a-zA-Z ]{2,30}$/.test(field.value);
+  },
+  "email": function(field) {
+    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(field.value);
+  },
+  "design": function(field) {
+    if (field.value === "default") {
+      return false;
+    } else {
+      return true;
+    }
+  },
+  "payment": function(field) {
+    if (field.value === "default") {
+      return false;
+    } else if (field.value === "credit card") {
+      var inputField = field.parentNode.querySelectorAll('input');
+      for (let i = 0; i < inputField.length; i++) {
+        inputField[i].className = "required";
+      }
+      return false;
+      console.log(inputField);
+    } else {
+      return true;
+    }
+  },
+  "cc-num": function(field) {
+    return /^(?:\d[ -]*?){13,16}$/.test(field.value);
+  },
+  "zip": function(field) {
+    return /^\d{5}$/.test(field.value);
+  },
+  "cvv": function(field) {
+    return /^\d{3}$/.test(field.value);
   }
-  var type = el.getAttribute('type');
+}
+
+function validateFieldBy(field) {
+  if (field.value === false) {
+    var valueMissing = false;
+    return !valueMissing;
+  }
+  var id = field.id;
+  console.log(id);
   //The typeof operator returns the type of a variable or an expression
-  if (typeof validateBy[type] === 'function') {
-    return validateBy[type](el);
-  } else {
-    return true;
+  if (id === 'name') {
+    return validateBy[id](field);
+  } else if (id === 'email') {
+      return validateBy[id](field);
+  } else if (id === 'design') {
+      return validateBy[id](field);
+  } else if (id === 'payment') {
+      return validateBy[id](field);
   }
 }
 
 function isEmpty(field) {
-  if (field === "") {
-    return true;
-  } else {
-    return false;
+  var valueMissing;
+  if (field.value === "") {
+    valueMissing = true;
+    return valueMissing;
   }
 }
 
-function isRequired(formField) {
-  if (formField.className === "required") {
-    var valid = isEmpty(formField);
-    if (valid === true) {
-      return valid = false;
+function isRequired(field) {
+  if (field.className === "required") {
+    var error;
+    if (field.value === "") {
+      error = field.previousElementSibling;
+      error.className = "error";
+      return error.innerHTML = 'Whoops error here.';
     } else {
+      error = field.previousElementSibling;
+      error.className = "error is-hidden";
       return valid = true;
     }
   }
 }//End of required validation
 
-
-
 (function() {
   const form = document.register;
   const activitiesList = document.register.activities;
-  //Stores form fields designated as required
-  var required = {};
   //Add validation boolean to valid object
   var valid = {};
-  var validState = false;
+  var validState = true;
   var isFormValid = false;
 
-
-  // valid.name = isEmpty(element) && validateElementByType(element);
-  // valid.email = isEmpty(element) && validateElementByType(element);
-  // if ( type === "email") {
-  //   valid.email = validateBy.emailTest(element);
-  // }
-  // if (type === "select-one" && name === "user_design") {
-  //   valid.shirtInfo = !isDefault(element);
-  // }
-  // if (type === "select-one" && name === "user_payment") {
-  //   valid.payment = !isDefault(element);
-  //   valid.payment = !
-  // }
-  //Custom validation
-  // valid.checklist = validateActivities(activitiesList);
-  // console.log(valid);
+  // document.addEventListener('blur', (e) => {
+  //   // Don't validate submits, buttons, file and reset inputs, and disabled fields return;
+  //   if (e.target.type === 'submit' || e.target.type === 'button' || e.target.type === 'fieldset' ) {
+  //     return;
+  //   } else {
+  //     // Collect them
+  //     var valid = e.target;
+  //   }
+  //   console.log(valid);
+  // }, true);
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     for (let i = 0; i < form.length; i++) {
-      validState = isRequired(form[i]);
-      valid[form[i].id] = validState;
+      if (form[i].className === "required") {
+        validState = !isEmpty(form[i]);
+        validState = validateFieldBy(form[i]);
+        valid[form[i].id] = validState;
+      }
     }
+    //Custom validation
+    valid.checklist = validateActivities(activitiesList);
     console.log(valid);
 
     for (var field in valid) {
-      console.log(valid[field]);
+      // console.log(valid[field]);
       // if (!valid[field]) {
       //   isFormValid = false;
       //   break;
@@ -293,5 +303,5 @@ function isRequired(formField) {
     if (!isFormValid) {
       e.preventDefault();
     }
-  });
+  }, false);
 }());
