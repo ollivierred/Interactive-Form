@@ -1,7 +1,8 @@
 
 //**Note: boolean value is not a string... DOn't put quotes around it.
 
-function validateActivities(checklist) {
+function validateActivities() {
+  const activitiesList = document.register.activities;
   var checklist = document.querySelectorAll('.activities input');
   var isChecked = 0;
   for (let i = 0; i < checklist.length; i++) {
@@ -12,28 +13,30 @@ function validateActivities(checklist) {
   }
   return isChecked > 0 ? valid = true : valid = false;
 }
-
-var validateBy = {
-  "notEmpty": function(field) {
-    var value = field.value;
-    if ( value.length > 0 ) {
-      return true;
-    } else {
-      return false;
+function validatePaymentOption(obj, field) {
+  if (field.value === "credit card") {
+    //Give input fields the class "required"
+    var inputField = field.parentNode.querySelectorAll('input');
+    for (let i = 0; i < inputField.length; i++) {
+      inputField[i].className = "required";
     }
-  },
+  } else {
+    return true;
+  }
+}
+
+var errorMessage = {
+  empty:,
+  mismatch:,
+
+}
+
+var validate = {
   "name": function(field) {
     return /^[a-zA-Z ]{2,30}$/.test(field.value);
   },
   "email": function(field) {
     return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(field.value);
-  },
-  "option": function(field) {
-    if (!field.value === "default" || !field.value === "select_method") {
-      return true;
-    } else {
-      return false;
-    }
   },
   "cc-num": function(field) {
     return /^(?:\d[ -]*?){13,16}$/.test(field.value);
@@ -43,19 +46,6 @@ var validateBy = {
   },
   "cvv": function(field) {
     return /^\d{3}$/.test(field.value);
-  },
-  "payment": function(field) {
-    if (field.value === "select_method") {
-      return false;
-    } else if (field.value === "credit card") {
-      var inputField = field.parentNode.querySelectorAll('input');
-      for (let i = 0; i < inputField.length; i++) {
-        inputField[i].className = "required";
-      }
-      return false;
-    } else {
-      return true;
-    }
   }
 }//End of object
 
@@ -67,6 +57,23 @@ function isRequired(field) {
   }
 }//End of required validation
 
+function valueMissing(field) {
+  var value = field.value;
+  if ( value.length == 0 ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function optionMismatch(field) {
+  if (field.value === "default") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function setErrorMessage(obj, field, type, id, value) {
   if (!obj.isNotEmpty) return "Please fill out this field";
   if (!obj.validOption && id === "design") return "Select a T-Shirt theme";
@@ -77,83 +84,77 @@ function setErrorMessage(obj, field, type, id, value) {
 }
 
 function createError(field, id) {
-  const form = document.querySelector('#register');
-    const span = document.createElement('span');
-    span.setAttribute = 'aria-live="polite"';
-    span.className = 'error at ' + id;
-    field.parentElement.insertBefore(span, field);
-    return span;
-}
-
-function removeErrorMessage(field) {
-  // const form = document.querySelector('#register');
-  // const error = form.querySelector('.error');
-  // console.log(error);
-  // if (error === null) {
-  //   return;
-  // } else {
-  //   form.removeChild(error);
-  // }
+  var span = document.createElement('span');
+  span.textContent = "Please fill this field";
+  span.setAttribute = 'aria-live="polite"';
+  span.className = 'error message-for-' + id;
+  field.parentElement.insertBefore(span, field.nextElementSibling);
 }
 
 function validateThisField(field) {
-  //Declare the "thisField" object
-  var thisField = {};
-
   //Check if required
   //If yes, check if the field is empty
   //If empty, show error
   //If not, validate field by id
+  var isValid = {};
 
-  thisField.required = isRequired(field);
-  if (thisField.required) {
-    console.log("This field " + id + " is required");
-    var id = field.id;
-    var type = field.type;
-    var value = field.value;
-    if (type === "text" || type === "email") thisField.notEmpty = validateBy["notEmpty"](field);
-    if (type === "select-one") thisField.validOption = validateBy["option"](field);
-    //Has field been filled out
-    if (!thisField.isNotEmpty) {
-      var error = createError(field, id);
-      error.innerHTML = setErrorMessage(thisField, field, type, id, value);
-      console.log("Please fill out this field");
-    } else if (!thisField.validOption) {
-      var error = createError(field, id);
-      error.innerHTML = setErrorMessage(thisField, field, type, id, value);
-      console.log("Please select");
-    }
+  if (isRequired(field)) {
+    var id = field.id,
+        type = field.type,
+        value = field.value;
 
-      //Retrieves a validation function based on the field's "id"
-      // for (var hasVal in thisField) {
-      //   if (thisField[hasVal]) {
-      //     thisField.isValid = validateBy[id](field);
-      //     //Breakdown of the above script
-      //     // if (thisField.id === 'name') thisField.validValue = validateBy[field.id](field);
-      //   }
-      // }
-
-      if (thisField.isValid === false) {
-        // <span class="error is-hidden" aria-live="polite"></span>
-        // defineError(field, id, value);
-        // console.log(val);
-      } else if (thisField.isValid === true) {
-        // removeErrorMessage(field);
+    if (type === "text" || type === "email") {
+      if (!valueMissing(field)) isValid[id] = validate[id](field);
+      if (isValid[id]) {
+        var error = field.nextElementSibling;
+        if (error.className === 'error message-for-' + id ) error.parentElement.removeChild(error);
+      } else {
+        var error = field.nextElementSibling;
+        if (error.className === 'error message-for-' + id ) {
+          error.parentElement.removeChild(error);
+        }
+        createError(field, id);
       }
-
-        // for (let value in thisField) {
-        //   console.log(thisField[value]);
-        //   // if (!valid[field]) {
-        //   //   isFormValid = false;
-        //   //   break;
-        //   // } else {
-        //   //   isFormValid = true;
-        //   // }
-        // }
-        console.log(thisField);
     }
 
-  // console.log(thisField);
+    if (type === "select-one" && id === "design") {
+      if (!optionMismatch(field)) {
+        isValid[id] = validate[id](field);
+      }
+      console.log("Please select a T-Shirt theme");
+    }
+    // if (type === "select-one" && value === "credit card") {
+    //   // isValid[id] = validatePaymentOption(isValid, field);
+    //   isValid[id] = validate["cc-num"](field);
+    //   isValid[id] = validate["zip"](field);
+    //   isValid[id] = validate["cvv"](field);
+    //   if (isValid["cc-num"] && isValid isValidtrue) {
+    //
+    //   }
+    // }
+    //Custom validation
+    // isValid.checklist = validateActivities();
+    // isValid.creditCard = validateCreditCard(field, id);
+    console.log(isValid);
+  }
+    //Retrieves a validation function based on the field's "id"
+    // for (var hasVal in thisField) {
+    //   if (thisField[hasVal]) {
+    //     thisField.isValid = validateBy[id](field);
+    //     //Breakdown of the above script
+    //     // if (thisField.id === 'name') thisField.validValue = validateBy[field.id](field);
+    //   }
+    // }
+
+    // for (let value in thisField) {
+    //   console.log(thisField[value]);
+    //   // if (!valid[field]) {
+    //   //   isFormValid = false;
+    //   //   break;
+    //   // } else {
+    //   //   isFormValid = true;
+    //   // }
+    // }
 }
 
 // Disables / Enables checkboxes...
@@ -204,10 +205,6 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
         field.bitcoin.style.display = 'inherit';
         field.paypal.style.display = 'none';
         field.creditCard.style.display = 'none';
-    } else if (value === "select_method"){
-      field.bitcoin.style.display = 'none';
-      field.paypal.style.display = 'none';
-      field.creditCard.style.display = 'none';
     } else {
       field.creditCard.style.display = 'inherit';
       field.bitcoin.style.display = 'none';
@@ -257,6 +254,7 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
   const priceDiv = document.createElement('div');
   priceDiv.id = "running-total";
   fieldset.appendChild(priceDiv);
+
   var runningTotal = 0;
 
   fieldset.addEventListener('change', function(e) {
@@ -280,7 +278,7 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
     priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
 
     // Stores the activities, would like this be be more dynamic
-    let event = {
+    var event = {
       all: fieldset.querySelector('input[value="all"]'),
       jsFrameworks: fieldset.querySelector('input[value="js-frameworks"]'),
       jsLibs: fieldset.querySelector('input[value="js-libs"]'),
@@ -300,13 +298,11 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
 
 
 (function() {
-  const form = document.querySelector('#register');
-  // const fieldset = form.querySelector('fieldset');
-  const activitiesList = document.register.activities;
+  const form = document.register;
+  console.log(form);
 
   //Add validation boolean to valid object
-  var valid = {};
-  var validState = true;
+  var isValid = {};
   var isFormValid = false;
 
   document.addEventListener('blur', (e) => {
@@ -318,34 +314,32 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
       //Validate it
       validateThisField(field);
     }
-
   }, true);
 
-  form.addEventListener('submit', (e) => {
-
-  //   for (let i = 0; i < form.length; i++) {
-  //     if (form[i].className === "required") {
-  //       validState = !isEmpty(form[i]);
-  //       validState = validateFieldBy(form[i]);
-  //       valid[form[i].id] = validState;
-  //     }
+  // form.addEventListener('submit', (e) => {
+  // //   for (let i = 0; i < form.length; i++) {
+  // //     if (form[i].className === "required") {
+  // //       validState = !isEmpty(form[i]);
+  // //       validState = validateFieldBy(form[i]);
+  // //       valid[form[i].id] = validState;
+  // //     }
+  // //   }
+  // //   //Custom validation
+  // //   valid.checklist = validateActivities(activitiesList);
+  // //   console.log(valid);
+  // //
+  // //   for (var field in valid) {
+  // //     // console.log(valid[field]);
+  // //     // if (!valid[field]) {
+  // //     //   isFormValid = false;
+  // //     //   break;
+  // //     // } else {
+  // //     //   isFormValid = true;
+  // //     // }
+  // //   }
+  //   if (!isFormValid) {
+  //     e.preventDefault();
   //   }
-  //   //Custom validation
-  //   valid.checklist = validateActivities(activitiesList);
-  //   console.log(valid);
-  //
-  //   for (var field in valid) {
-  //     // console.log(valid[field]);
-  //     // if (!valid[field]) {
-  //     //   isFormValid = false;
-  //     //   break;
-  //     // } else {
-  //     //   isFormValid = true;
-  //     // }
-  //   }
+  // }, false);
 
-    if (!isFormValid) {
-      e.preventDefault();
-    }
-  }, false);
 }());
