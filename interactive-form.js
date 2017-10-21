@@ -13,34 +13,26 @@ function validateActivities(checklist) {
   return isChecked > 0 ? valid = true : valid = false;
 }
 
-function setErrorMessage(errorType, field) {
-  // valueMissing = false;
-  // valueMismatch = false;
-  // valueTooShort = false;
-  // valueTooLong = false;
-
-  if (valueMissing && field.id === "name") {
-    let error = field.previousElementSibling;
-    error.style.display = "block";
-    var message = "Please fill out this field.";
-    field.style.border = "2px solid firebrick";
-  } else {
-    field.style.border = "inherit";
-  }
-}
-
 var validateBy = {
+  "notEmpty": function(field) {
+    var value = field.value;
+    if ( value.length > 0 ) {
+      return true;
+    } else {
+      return false;
+    }
+  },
   "name": function(field) {
     return /^[a-zA-Z ]{2,30}$/.test(field.value);
   },
   "email": function(field) {
     return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(field.value);
   },
-  "design": function(field) {
-    if (field.value === "default") {
-      return false;
-    } else {
+  "option": function(field) {
+    if (!field.value === "default" || !field.value === "select_method") {
       return true;
+    } else {
+      return false;
     }
   },
   "cc-num": function(field) {
@@ -74,79 +66,93 @@ function isRequired(field) {
     return false;
   }
 }//End of required validation
-function isEmpty(field) {
-  // setErrorMessage(valueMissing, field);
-  if (field.value === "") {
-    return false;
-  } else {
-    return true;
-  }
+
+function setErrorMessage(obj, field, type, id, value) {
+  if (!obj.isNotEmpty) return "Please fill out this field";
+  if (!obj.validOption && id === "design") return "Select a T-Shirt theme";
+  if (id === "email") return "Please enter a valid " + id + " address";
+  if (id === "cc-num") return "Credit card must be 13 - 16 digits long, you entered " + value.length;
+  if (id === "zip") return "Zipcode should be 5 digits long, you entered " + value.length;
+  if (id === "cvv") return "Your cvv should be 3 digits long, you entered " + value.length;
 }
 
-function setErrorMessage(field, fieldValue) {
+function createError(field, id) {
   const form = document.querySelector('#register');
-  const fieldset = form.querySelector('fieldset');
-  const span = document.createElement('span');
-  span.className = "error";
-  span.style.textAlign = "center";
-  form.insertBefore(span, fieldset);
-  console.log(fieldset);
-
-  if (field.id === "name") span.innerHTML = "Please enter a valid " + field.id;
-  if (field.id === "email") span.innerHTML = "Please enter a valid " + field.id + " address";
-  if (field.id === "cc-num") span.innerHTML = "Credit card must be 13 - 16 digits long, you entered " + fieldValue.length;
-  if (field.id === "zip") span.innerHTML = "Zipcode should be 5 digits long, you entered " + fieldValue.length;
-  if (field.id === "cvv") span.innerHTML = "Your cvv should be 3 digits long, you entered " + fieldValue.length;
+    const span = document.createElement('span');
+    span.setAttribute = 'aria-live="polite"';
+    span.className = 'error at ' + id;
+    field.parentElement.insertBefore(span, field);
+    return span;
 }
 
-function removeErrorMessage() {
-  const form = document.querySelector('#register');
-  const error = form.querySelector('.error');
-  console.log(error);
-  if (error === null) {
-    return;
-  } else {
-    form.removeChild(error);
-  }
+function removeErrorMessage(field) {
+  // const form = document.querySelector('#register');
+  // const error = form.querySelector('.error');
+  // console.log(error);
+  // if (error === null) {
+  //   return;
+  // } else {
+  //   form.removeChild(error);
+  // }
 }
 
 function validateThisField(field) {
   //Declare the "thisField" object
   var thisField = {};
-  thisField.id = field.id;
+
+  //Check if required
+  //If yes, check if the field is empty
+  //If empty, show error
+  //If not, validate field by id
+
   thisField.required = isRequired(field);
-  if (thisField.required) thisField.hasValue = isEmpty(field);
-  var value = field.value;
-
-  //Has field been filled out
-  if (thisField.hasValue === false) {
-    if (thisField.id === "name" || thisField.id === "email") console.log("Please fill this field");
-  } else {
-    //Retrieves a validation function based on the field's "id"
-    //I feel pretty good about this one
-    for (var hasVal in thisField) {
-      if (thisField[hasVal]) thisField.valIsValid = validateBy[field.id](field);
-    }
-    //Breakdown of the above script
-    // if (thisField.id === 'name') thisField.validValue = validateBy[field.id](field);
-
-    if (thisField.validValue === false) {
-      setErrorMessage(field, value);
-    } else {
-      // removeErrorMessage();
+  if (thisField.required) {
+    console.log("This field " + id + " is required");
+    var id = field.id;
+    var type = field.type;
+    var value = field.value;
+    if (type === "text" || type === "email") thisField.notEmpty = validateBy["notEmpty"](field);
+    if (type === "select-one") thisField.validOption = validateBy["option"](field);
+    //Has field been filled out
+    if (!thisField.isNotEmpty) {
+      var error = createError(field, id);
+      error.innerHTML = setErrorMessage(thisField, field, type, id, value);
+      console.log("Please fill out this field");
+    } else if (!thisField.validOption) {
+      var error = createError(field, id);
+      error.innerHTML = setErrorMessage(thisField, field, type, id, value);
+      console.log("Please select");
     }
 
-      // for (let value in thisField) {
-      //   console.log(thisField[value]);
-      //   // if (!valid[field]) {
-      //   //   isFormValid = false;
-      //   //   break;
-      //   // } else {
-      //   //   isFormValid = true;
-      //   // }
+      //Retrieves a validation function based on the field's "id"
+      // for (var hasVal in thisField) {
+      //   if (thisField[hasVal]) {
+      //     thisField.isValid = validateBy[id](field);
+      //     //Breakdown of the above script
+      //     // if (thisField.id === 'name') thisField.validValue = validateBy[field.id](field);
+      //   }
       // }
-      console.log(thisField);
-  }
+
+      if (thisField.isValid === false) {
+        // <span class="error is-hidden" aria-live="polite"></span>
+        // defineError(field, id, value);
+        // console.log(val);
+      } else if (thisField.isValid === true) {
+        // removeErrorMessage(field);
+      }
+
+        // for (let value in thisField) {
+        //   console.log(thisField[value]);
+        //   // if (!valid[field]) {
+        //   //   isFormValid = false;
+        //   //   break;
+        //   // } else {
+        //   //   isFormValid = true;
+        //   // }
+        // }
+        console.log(thisField);
+    }
+
   // console.log(thisField);
 }
 
@@ -294,8 +300,10 @@ function checkboxControl(checked, boxValue, thisName ,conflict) {
 
 
 (function() {
-  const form = document.register;
+  const form = document.querySelector('#register');
+  // const fieldset = form.querySelector('fieldset');
   const activitiesList = document.register.activities;
+
   //Add validation boolean to valid object
   var valid = {};
   var validState = true;

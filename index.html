@@ -17,16 +17,14 @@
 
     <form id="register" name="register" action="index.html" method="post" novalidate>
 
-      <fieldset>
+      <fieldset class="basic-info">
         <legend>Basic Info</legend>
 
         <label for="name">Name:</label>
-        <span class="error is-hidden" aria-live="polite">(Please provide your name)</span>
-          <input type="text" id="name" name="user_name" autofocus autocomplete="off" class="required">
+        <input type="text" id="name" name="user_name" autofocus autocomplete="off" class="required">
 
         <label for="email">Email:</label>
-        <span class="error is-hidden" aria-live="polite">(Please provide a valid email)</span>
-          <input type="email" id="email" name="user_email" autocomplete="off" class="required">
+        <input type="email" id="email" name="user_email" autocomplete="off" class="required">
 
         <label for="title">Job Role</label>
         <select id="title" name="user_title">
@@ -43,7 +41,6 @@
 
       <fieldset class="shirt">
         <legend>T-Shirt Info</legend>
-        <span class="error is-hidden" aria-live="polite">(Don't forget to pick a T-Shirt)</span>
           <div>
             <label for="size">Size:</label>
             <select id="size" name="user_size">
@@ -78,7 +75,6 @@
 
       <fieldset class="activities">
         <legend>Register for Activities</legend>
-          <span class="error is-hidden" aria-live="polite">(Please select an activity)</span>
 
           <label for="activity_1"><input type="checkbox" id="activity_1" name="activities" value="all"> Main Conference — $200</label>
           <label for="activity_2"><input type="checkbox" id="activity_2" name="activities" value="js-frameworks"> JavaScript Frameworks Workshop — Tuesday 9am-12pm, $100</label>
@@ -89,9 +85,8 @@
           <label for="activity_7"><input type="checkbox" id="activity_7" name="activities" value="npm"> npm Workshop — Wednesday 1pm-4pm, $100</label>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="payment-info">
         <legend>Payment Info</legend>
-        <span class="error is-hidden" aria-live="polite">(Please select a form of payment)</span>
 
         <label for="payment">I'm going to pay with:</label>
         <select id="payment" name="user_payment" class="required">
@@ -104,19 +99,16 @@
         <div id="credit-card" class="credit-card">
           <div class="col-6 col">
             <label for="cc-num">Card Number:</label>
-              <span class="error is-hidden" aria-live="polite">Credit card must be 13 - 16 digits long</span>
               <input id="cc-num" name="user_cc-num" type="text">
           </div>
 
           <div class="col-3 col">
             <label for="zip">Zip Code:</label>
-              <span class="error is-hidden" aria-live="polite">Invalid zipcode</span>
               <input id="zip" name="user_zip" type="text">
           </div>
 
           <div class="col-3 col">
             <label for="cvv">CVV:</label>
-              <span class="error is-hidden" aria-live="polite">Invalid cvv</span>
               <input id="cvv" name="user_cvv" type="text">
           </div>
 
