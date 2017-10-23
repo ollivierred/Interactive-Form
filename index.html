@@ -53,14 +53,14 @@
 
           <div>
             <label for="design">Design:</label>
-            <select id="design" name="user_design" class="required">
+            <select id="design" name="user_design">
               <option value="default" selected>Select Theme</option>
               <option value="js puns">Theme - JS Puns</option>
               <option value="heart js">Theme - I &#9829; JS</option>
             </select>
           </div>
 
-          <div id="colors-js-puns" class="required">
+          <div id="colors-js-puns">
             <label for="color">Color:</label>
             <select id="color">
               <option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>
@@ -75,7 +75,7 @@
 
       <fieldset class="activities">
         <legend>Register for Activities</legend>
-
+        <!-- <span class="error">Please select at least one activity</span> -->
           <label for="activity_1"><input type="checkbox" id="activity_1" name="activities" value="all"> Main Conference — $200</label>
           <label for="activity_2"><input type="checkbox" id="activity_2" name="activities" value="js-frameworks"> JavaScript Frameworks Workshop — Tuesday 9am-12pm, $100</label>
           <label for="activity_3"><input type="checkbox" id="activity_3" name="activities" value="js-libs"> JavaScript Libraries Workshop — Tuesday 1pm-4pm, $100</label>
@@ -89,7 +89,7 @@
         <legend>Payment Info</legend>
 
         <label for="payment">I'm going to pay with:</label>
-        <select id="payment" name="user_payment" class="required">
+        <select id="payment" name="user_payment">
           <!-- <option value="default">Select Payment Method</option> -->
           <option value="credit card" selected>Credit Card</option>
           <option value="paypal">PayPal</option>
@@ -100,16 +100,19 @@
           <div class="col-6 col">
             <label for="cc-num">Card Number:</label>
               <input id="cc-num" name="user_cc-num" type="text">
+              <!-- <span class="error">Enter a 16-digit number</span> -->
           </div>
 
           <div class="col-3 col">
             <label for="zip">Zip Code:</label>
               <input id="zip" name="user_zip" type="text">
+              <!-- <span class="error">Enter a 5-digit number</span> -->
           </div>
 
           <div class="col-3 col">
             <label for="cvv">CVV:</label>
               <input id="cvv" name="user_cvv" type="text">
+              <!-- <span class="error">Enter a 3-digit number</span> -->
           </div>
 
           <label for="exp-month">Expiration Date:</label>

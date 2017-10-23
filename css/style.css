@@ -74,6 +74,7 @@ label {
 	color: #000;
 	display: block;
 	margin-bottom: .5em;
+  clear: both;
 }
 
 input,
@@ -151,7 +152,7 @@ button:hover {
   width: 100%;
   font-size: .9em;
   margin-bottom: 1.7em;
-  color: brown;
+  color: #B71C1C;
 }
 
 /* =================================
