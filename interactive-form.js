@@ -1,12 +1,8 @@
 //*Note: a boolean value is not a string... DON'T put quotes around it*
-
-// const fieldset = document.querySelectorAll('fieldset');
 var errorMessage = {};
 function setErrorMessage(field, message) {
   errorMessage.field = field;
   errorMessage.message = message;
-  console.log(errorMessage);
-
 };
 
 function showErrorMessage() {
@@ -14,9 +10,6 @@ function showErrorMessage() {
   var $ref = $(errorMessage.field);
   var message = errorMessage.message;
   var $errorContainer = $ref.parent().children('span');
-  // var errorContainer = $ref.siblings('.error');
-  console.log($ref);
-  console.log(message);
   console.log($errorContainer.length);
 
   if (!$errorContainer.length) {
@@ -290,7 +283,6 @@ function valueMissing(field) {
     }
   });
 }());
-
 
 //Live and onSubmit validatiion
 (function() {
