@@ -1,4 +1,7 @@
-//*Note: a boolean value is not a string... DON'T put quotes around it*
+// -------------------------------------------------------------------------
+// A) FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
+// -------------------------------------------------------------------------
+
 var errorMessage = {};
 function setErrorMessage(field, message) {
   errorMessage.field = field;
@@ -13,56 +16,60 @@ function showErrorMessage() {
   console.log($errorContainer.length);
 
   if (!$errorContainer.length) {
-    $errorContainer = $('<span class="error" "aria-live", "polite"></span>').insertAfter($ref);
+    $errorContainer = $('<span class="error at_" "aria-live", "polite"></span>').insertAfter($ref);
   }
     $errorContainer.text(message);
 };
 
-function removeErrorMessage(field) {
-  var reference = document.querySelector("error at_" + field.id);
-  if (reference.className === "error at_" + field.id) reference.parentElement.removeChild(reference);
-  field.style.border = 'inherit';
+function removeErrorMessage() {
+  var $ref = $(errorMessage.field);
+  var $errorContainer = $ref.parent().children('.error');
+  console.log($errorContainer.length);
+  $errorContainer.remove();
 };
 
-//Dynamic validation function
+// -------------------------------------------------------------------------
+// A) OBJECT FOR VALIDATION BY ID NAME
+// -------------------------------------------------------------------------
+
 var validate = {
   "name": function(field, value) {
     var valid = /^[a-zA-Z ]{2,30}$/.test(value);
     if (!valid) {
-      setErrorMessage(field, "Enter a valid " + field.id);
-      showErrorMessage();
+      setErrorMessage(field, "Enter a valid " + field.id + ". Special characters are not allowed");
+      // showErrorMessage();
     }
     return valid;
   },
   "email": function(field, value) {
     var valid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value);
     if (!valid) {
-      setErrorMessage(field, "Enter a valid " + field.id + " address");
-      showErrorMessage();
+      setErrorMessage(field, "Enter a valid " + field.id + " address: jane@doe.com");
+      // showErrorMessage();
     }
     return valid;
   },
   "cc-num": function(field, value) {
     var valid = /^(?:\d[ -]*?){13,16}$/.test(value);
     if (!valid) {
-      setErrorMessage(field, "Enter a 13-16 digit number " + value.length + "/16");
-      showErrorMessage();
+      setErrorMessage(field, "Must be a 13-16 digit number " + value.length + "/16");
+      // showErrorMessage();
     }
     return valid;
   },
   "zip": function(field, value) {
     var valid = /^\d{5}$/.test(value);
     if (!valid) {
-      setErrorMessage(field, "Enter a 5-digit number " + value.length + "/5");
-      showErrorMessage();
+      setErrorMessage(field, "Must be a 5-digit number " + value.length + "/5");
+      // showErrorMessage();
     }
     return valid;
   },
   "cvv": function(field, value) {
     var valid = /^\d{3}$/.test(value);
     if (!valid) {
-      setErrorMessage(field, "Enter a 3-digit number " + value.length + "/3");
-      showErrorMessage();
+      setErrorMessage(field, "Must be a 3-digit number " + value.length + "/3");
+      // showErrorMessage();
     }
     return valid;
   }
@@ -77,11 +84,15 @@ function validateThisField(field) {
     showErrorMessage();
   } else {
     //Match the value and its validation function based on "id"
+    // removeErrorMessage();
     valid = validate[id](field, value);
   }
   return valid;
 }
 
+// -------------------------------------------------------------------------
+// D) FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
+// -------------------------------------------------------------------------
 //Custom validat functions
 function validateActivities() {
   var fieldset = document.querySelector('.activities');
@@ -119,6 +130,9 @@ function validatePayment() {
   }
 }
 
+// -------------------------------------------------------------------------
+// D) FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
+// -------------------------------------------------------------------------
 //validation helper functions
 function isRequired(field) {
   var valid;
@@ -129,6 +143,9 @@ function valueMissing(field) {
   return (field.value === "") ? valid = true : valid = false;
 }
 
+// -------------------------------------------------------------------------
+// D) FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
+// -------------------------------------------------------------------------
 // ”T-Shirt Info” function...
 (function() {
   const design = document.querySelector('#design');
@@ -164,17 +181,18 @@ function valueMissing(field) {
     }); //”T-Shirt Info” EventListener
 }()); //Immediately invoked function
 
+// -------------------------------------------------------------------------
+// D) ACTIVITIES FUNCTION
+// -------------------------------------------------------------------------
 // Activities function...
 (function() {
   const fieldset = document.querySelector('.activities');
   const priceDiv = document.createElement('div');
   var runningTotal = 0;
-
   priceDiv.id = "running-total";
   fieldset.appendChild(priceDiv);
 
-  // Disables / Enables checkboxes...
-  function checkboxControl(checked, boxValue, thisName ,conflict) {
+  function checkboxControl(checked, boxValue, thisName ,conflict) {   // Disables / Enables checkboxes...
     if (checked && boxValue === thisName) {
         conflict.disabled = true;
     } else if (!checked && boxValue === thisName) {
@@ -217,12 +235,15 @@ function valueMissing(field) {
   });// activities EventListener
 }());// End of function
 
-// Payment and job role function...
+// -------------------------------------------------------------------------
+// D) PAYMENT AND JOB ROLE FUNCTION
+// -------------------------------------------------------------------------
+
 (function() {
   const payment = document.querySelector("#payment");
   const elements = document.querySelectorAll('#credit-card input');
-  //Holds the list of elements to be hidden
-  var field = {
+
+  var field = {                                                     // Holds the list of elements to be hidden
     otherField: document.querySelector('#other-title'),
     creditCard: document.querySelector("#credit-card"),
     paypal: document.querySelector("#paypal"),
@@ -232,9 +253,7 @@ function valueMissing(field) {
   for (var el in field) {
     field[el].style.display = "none";
   };
-  // Credit-card shows by default
-  field.creditCard.style.display = 'inherit';
-  // addRequiredClass(elements);
+  field.creditCard.style.display = 'inherit';                       // Credit-card shows by default
 
   //Show and hide input field for the option "other"
   const jobRole = document.querySelector('#title');
@@ -248,22 +267,21 @@ function valueMissing(field) {
   });
 
   //Helper function add required class
-  function addRequiredClass(elements) {
-    //Give input fields the class "required"
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].setAttribute("class", "required");
-    }
-  }
+  // function addRequiredClass(elements) {
+  //   //Give input fields the class "required"
+  //   for (let i = 0; i < elements.length; i++) {
+  //     elements[i].setAttribute("class", "required");
+  //   }
+  // }
   //Helper function remove required class
-  function removeRequiredClass(elements) {
-    //Give input fields the class "required"
-    for (let i = 0; i < elements.length; i++) {
-      if (elements[i].hasAttribute("class")) elements[i].removeAttribute("class");
-    }
-  }
+  // function removeRequiredClass(elements) {
+  //   //Give input fields the class "required"
+  //   for (let i = 0; i < elements.length; i++) {
+  //     if (elements[i].hasAttribute("class")) elements[i].removeAttribute("class");
+  //   }
+  // }
 
-  //Show / Hide option helper function
-  function showAndHide(field, creditCard, bitcoin, paypal) {
+  function showAndHide(field, creditCard, bitcoin, paypal) {        //Show / Hide option helper function
     field.creditCard.style.display = creditCard;
     field.bitcoin.style.display = bitcoin;
     field.paypal.style.display = paypal;
@@ -284,7 +302,11 @@ function valueMissing(field) {
   });
 }());
 
-//Live and onSubmit validatiion
+
+// -------------------------------------------------------------------------
+// D) VALIDATION ONSUBMIT / LIVE
+// -------------------------------------------------------------------------
+
 (function() {
   const form = document.register;
   var isFormValid = false;
@@ -292,12 +314,11 @@ function valueMissing(field) {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     var valid = {}, isValid = false;
-
     for (let i = 0; i < form.length; i++) {
       var field = form[i];
       if (isRequired(field)) {
         isValid = validateThisField(field);
-
+        !isValid ? showErrorMessage() : removeErrorMessage();
         valid[field.id] = isValid;
       }
 
