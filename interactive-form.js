@@ -1,17 +1,28 @@
 //*Note: a boolean value is not a string... DON'T put quotes around it*
-function setErrorMessage(field) {
-  const fieldset = document.querySelectorAll('fieldset');
 
-  //Create error message element
-  const span = document.createElement("span");
-  span.setAttribute("aria-live", "polite");
-  span.setAttribute("class", "error at_" + field.id);
-  //Error message is set here
-  span.textContent = "Error message goes here";
+// const fieldset = document.querySelectorAll('fieldset');
+var errorMessage = {};
+function setErrorMessage(field, message) {
+  errorMessage.field = field;
+  errorMessage.message = message;
+  console.log(errorMessage);
 
-  //Add error to document
-  field.insertAdjacentElement('afterend', span);
-  field.style.border = '2px solid #B71C1C';
+};
+
+function showErrorMessage() {
+  // Create error message element
+  var $ref = $(errorMessage.field);
+  var message = errorMessage.message;
+  var $errorContainer = $ref.parent().children('span');
+  // var errorContainer = $ref.siblings('.error');
+  console.log($ref);
+  console.log(message);
+  console.log($errorContainer.length);
+
+  if (!$errorContainer.length) {
+    $errorContainer = $('<span class="error" "aria-live", "polite"></span>').insertAfter($ref);
+  }
+    $errorContainer.text(message);
 };
 
 function removeErrorMessage(field) {
@@ -22,52 +33,81 @@ function removeErrorMessage(field) {
 
 //Dynamic validation function
 var validate = {
-  "name": function(field) {
-      return /^[a-zA-Z ]{2,30}$/.test(field.value);
+  "name": function(field, value) {
+    var valid = /^[a-zA-Z ]{2,30}$/.test(value);
+    if (!valid) {
+      setErrorMessage(field, "Enter a valid " + field.id);
+      showErrorMessage();
+    }
+    return valid;
   },
-  "email": function(field) {
-      return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(field.value);
+  "email": function(field, value) {
+    var valid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value);
+    if (!valid) {
+      setErrorMessage(field, "Enter a valid " + field.id + " address");
+      showErrorMessage();
+    }
+    return valid;
   },
-  "cc-num": function(field) {
-      return /^(?:\d[ -]*?){13,16}$/.test(field.value);
+  "cc-num": function(field, value) {
+    var valid = /^(?:\d[ -]*?){13,16}$/.test(value);
+    if (!valid) {
+      setErrorMessage(field, "Enter a 13-16 digit number " + value.length + "/16");
+      showErrorMessage();
+    }
+    return valid;
   },
-  "zip": function(field) {
-      return /^\d{5}$/.test(field.value);
+  "zip": function(field, value) {
+    var valid = /^\d{5}$/.test(value);
+    if (!valid) {
+      setErrorMessage(field, "Enter a 5-digit number " + value.length + "/5");
+      showErrorMessage();
+    }
+    return valid;
   },
-  "cvv": function(field) {
-      return /^\d{3}$/.test(field.value);
+  "cvv": function(field, value) {
+    var valid = /^\d{3}$/.test(value);
+    if (!valid) {
+      setErrorMessage(field, "Enter a 3-digit number " + value.length + "/3");
+      showErrorMessage();
+    }
+    return valid;
   }
 }//End of object
 function validateThisField(field) {
   var id = field.id, type = field.type, value = field.value;
-
   var valid = false; //Flag is set to false
+
+  if (valueMissing(field)) {
+    //Sets error message for fields that are empty
+    setErrorMessage(field, "This field, " + id + " is required");
+    showErrorMessage();
+  } else {
     //Match the value and its validation function based on "id"
-    valid = validate[id](field);
-    //If not valid, show appropriate error
-    if (!valid) {
-      //show error message
-      setErrorMessage(field);
-      return valid;
-    } else {
-      //Once field is valid, remove error and return the value
-      //Remove error message
-      removeErrorMessage(field);
-      return valid;
-    }
+    valid = validate[id](field, value);
+  }
+  return valid;
 }
 
 //Custom validat functions
 function validateActivities() {
+  var fieldset = document.querySelector('.activities');
   var checklist = document.querySelectorAll('.activities input');
+  console.log(fieldset);
   var isChecked = 0;
+  var valid = false;
   for (let i = 0; i < checklist.length; i++) {
     //Counts all checked boxes
     if (checklist[i].checked) {
       isChecked++
     }
   }
-  return isChecked > 0 ? valid = true : valid = false;
+  isChecked > 0 ? valid = true : valid = false;
+  if (!valid) {
+    setErrorMessage(fieldset, "Select at least one activity");
+    showErrorMessage();
+  }
+  return valid;
 }
 function validatePayment() {
   var payment = document.querySelector("#payment");
@@ -78,9 +118,9 @@ function validatePayment() {
     return valid = true;
   } else {
     var fields = document.querySelectorAll(".payment-info input");
-    console.log(fields);
     for (var i = 0; i < fields.length; i++) {
-      paymentFields[fields[i].id] = validateThisField(fields[i]);
+       valid = validateThisField(fields[i]);
+       paymentFields[fields[i].id] = valid;
     }
     return paymentFields;
   }
@@ -88,18 +128,12 @@ function validatePayment() {
 
 //validation helper functions
 function isRequired(field) {
-  if (field.className === "required") {
-    return true;
-  } else {
-    return false;
-  }
+  var valid;
+  return field.className === "required" ? valid = true : valid = false;
 }//End of required validation
 function valueMissing(field) {
-  if (field.value === "") {
-    return true;
-  } else {
-    return;
-  }
+  var valid;
+  return (field.value === "") ? valid = true : valid = false;
 }
 
 // ”T-Shirt Info” function...
@@ -265,17 +299,21 @@ function valueMissing(field) {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    var isValid = {};
+    var valid = {}, isValid = false;
+
     for (let i = 0; i < form.length; i++) {
       var field = form[i];
       if (isRequired(field)) {
-        isValid[field.id] = validateThisField(field);
+        isValid = validateThisField(field);
+
+        valid[field.id] = isValid;
       }
+
     }
     //Custom validation
-    isValid.activities = validateActivities();
-    isValid.payment = validatePayment();
-    console.log(isValid);
+    valid.activities = validateActivities();
+    valid.payment = validatePayment();
+    console.log(valid);
 
     if (!isFormValid) {
       e.preventDefault();
