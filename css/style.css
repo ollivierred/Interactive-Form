@@ -138,6 +138,14 @@ input:disabled {
 	max-width: 680px;
 }
 
+.counter {
+  display: block;
+  float: right;
+  font-size: 0.8em;
+  color: rgba(0, 0, 0, 0.67);
+  margin-top: 5px;
+}
+
 .shirt div {
 	float: left;
 	margin-right: .85em;
