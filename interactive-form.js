@@ -1,37 +1,37 @@
 // -------------------------------------------------------------------------
-// A) FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
+// FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
 // -------------------------------------------------------------------------
-
-var errorMessage = {};
+// var errorMessage = {};
 function setErrorMessage(field, message) {
-  errorMessage.field = field;
-  errorMessage.message = message;
+  $(field).data('errorMessage', message);
 };
 
 function showErrorMessage() {
-  // Create error message element
-  var $ref = $(errorMessage.field);
-  var message = errorMessage.message;
-  var $errorContainer = $ref.parent().children('span');
-  console.log($errorContainer.length);
-
-  if (!$errorContainer.length) {
-    $errorContainer = $('<span class="error at_" "aria-live", "polite"></span>').insertAfter($ref);
-  }
-    $errorContainer.text(message);
+  // var ref = errorMessage.field;
+  // var message = errorMessage.message;
+  // var errorContainer = ref.parentElement.querySelector('.error');
+  //
+  // if (!errorContainer) {
+  //   errorContainer = document.createElement('span');
+  //   errorContainer.className = "error at_" + ref.id;
+  //   ref.parentElement.appendChild(errorContainer);
+  // }
+  //   errorContainer.textContent = message;
 };
 
 function removeErrorMessage() {
-  var $ref = $(errorMessage.field);
-  var $errorContainer = $ref.parent().children('.error');
-  console.log($errorContainer.length);
-  $errorContainer.remove();
+
+  // var ref = errorMessage[field.id];
+  // var errorContainer = ref.parentElement.querySelector('.error');
+  // console.log(errorContainer);
+  // ref.parentElement.removeChild(errorContainer);
 };
-
-// -------------------------------------------------------------------------
-// A) OBJECT FOR VALIDATION BY ID NAME
 // -------------------------------------------------------------------------
 
+
+// -------------------------------------------------------------------------
+// OBJECT FOR VALIDATION BY ID NAME
+// -------------------------------------------------------------------------
 var validate = {
   "name": function(field, value) {
     var valid = /^[a-zA-Z ]{2,30}$/.test(value);
@@ -76,28 +76,27 @@ var validate = {
 }//End of object
 function validateThisField(field) {
   var id = field.id, type = field.type, value = field.value;
-  var valid = false; //Flag is set to false
+  var valid = false;                                                //Flag is set to false
 
   if (valueMissing(field)) {
-    //Sets error message for fields that are empty
-    setErrorMessage(field, "This field, " + id + " is required");
+    setErrorMessage(field, "This field, " + id + " is required");   //Sets error message for fields that are empty
     showErrorMessage();
   } else {
-    //Match the value and its validation function based on "id"
-    // removeErrorMessage();
-    valid = validate[id](field, value);
+    valid = validate[id](field, value);                             //Match the field value to its validation function based on "id"
   }
   return valid;
 }
+// -------------------------------------------------------------------------
+
 
 // -------------------------------------------------------------------------
-// D) FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
+// CUSTOM VALIDATION FUNCTIONS: ACTIVITIES AND PAYMENT
 // -------------------------------------------------------------------------
-//Custom validat functions
 function validateActivities() {
   var fieldset = document.querySelector('.activities');
   var checklist = document.querySelectorAll('.activities input');
-  console.log(fieldset);
+  var checkboxLabel = checklist[0].parentElement;
+
   var isChecked = 0;
   var valid = false;
   for (let i = 0; i < checklist.length; i++) {
@@ -108,11 +107,13 @@ function validateActivities() {
   }
   isChecked > 0 ? valid = true : valid = false;
   if (!valid) {
-    setErrorMessage(fieldset, "Select at least one activity");
+    setErrorMessage(checkboxLabel, "Select at least one activity");
     showErrorMessage();
   }
   return valid;
 }
+// -------------------------------------------------------------------------
+
 function validatePayment() {
   var payment = document.querySelector("#payment");
   var paymentFields = {};
@@ -129,24 +130,26 @@ function validatePayment() {
     return paymentFields;
   }
 }
+// -------------------------------------------------------------------------
+
 
 // -------------------------------------------------------------------------
-// D) FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
+// VALIDATION HELPER FUNCTIONS
 // -------------------------------------------------------------------------
-//validation helper functions
 function isRequired(field) {
   var valid;
   return field.className === "required" ? valid = true : valid = false;
-}//End of required validation
+} // End of required validation
+// -------------------------------------------------------------------------
 function valueMissing(field) {
   var valid;
   return (field.value === "") ? valid = true : valid = false;
 }
+// -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// D) FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
+// T-SHIRT INFO FUNCTION
 // -------------------------------------------------------------------------
-// ”T-Shirt Info” function...
 (function() {
   const design = document.querySelector('#design');
   const color = document.querySelector('#color');
@@ -180,11 +183,11 @@ function valueMissing(field) {
         }
     }); //”T-Shirt Info” EventListener
 }()); //Immediately invoked function
+// -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// D) ACTIVITIES FUNCTION
+// DISABLE /ENABLE CHECKBOX FUNCTION
 // -------------------------------------------------------------------------
-// Activities function...
 (function() {
   const fieldset = document.querySelector('.activities');
   const priceDiv = document.createElement('div');
@@ -204,15 +207,15 @@ function valueMissing(field) {
     const checkbox = e.target;
     const isChecked = checkbox.checked;
     const itsValue = checkbox.value;
-    // Tracks the running total...
-      // If box is checked || unchecked and the main activity
-      // If box is checked || unchecked
-    if (isChecked && itsValue === "all") { runningTotal += 200;
-    } else if (!isChecked && itsValue === "all") { runningTotal -= 200;
+
+    if (isChecked && itsValue === "all") {
+      runningTotal += 200;
+    } else if (!isChecked && itsValue === "all") {
+      runningTotal -= 200;
     } else {
-      if (isChecked) { runningTotal += 100;
-      } else if (!isChecked) { runningTotal -= 100;
-      }//End of Inner if, else statement
+      if (isChecked) runningTotal += 100;
+      if (!isChecked) runningTotal -= 100;
+      //End of Inner if, else statement
     }//End of Outer if, else statement
     priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
 
@@ -234,11 +237,11 @@ function valueMissing(field) {
     checkboxControl(isChecked, itsValue, "node", event.jsLibs);
   });// activities EventListener
 }());// End of function
-
-// -------------------------------------------------------------------------
-// D) PAYMENT AND JOB ROLE FUNCTION
 // -------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------
+// PAYMENT AND JOB ROLE FUNCTION
+// -------------------------------------------------------------------------
 (function() {
   const payment = document.querySelector("#payment");
   const elements = document.querySelectorAll('#credit-card input');
@@ -301,12 +304,11 @@ function valueMissing(field) {
     }
   });
 }());
-
-
-// -------------------------------------------------------------------------
-// D) VALIDATION ONSUBMIT / LIVE
 // -------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------
+// VALIDATION ONSUBMIT / LIVE
+// -------------------------------------------------------------------------
 (function() {
   const form = document.register;
   var isFormValid = false;
@@ -321,7 +323,6 @@ function valueMissing(field) {
         !isValid ? showErrorMessage() : removeErrorMessage();
         valid[field.id] = isValid;
       }
-
     }
     //Custom validation
     valid.activities = validateActivities();
@@ -334,3 +335,4 @@ function valueMissing(field) {
   });
 
 }());
+// -------------------------------------------------------------------------

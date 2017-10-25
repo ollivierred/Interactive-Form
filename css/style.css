@@ -125,6 +125,10 @@ button:hover {
   outline: inherit;
 }*/
 
+input:disabled {
+  color: rgba(4, 4, 4, 0.37);
+}
+
 /* =================================
   Page Styles
 ==================================== */
