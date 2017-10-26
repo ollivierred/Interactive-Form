@@ -1,7 +1,5 @@
 //Number tracker function
 
-
-
 (function createCountContainer() {
   var paymentLabels = document.querySelectorAll(".payment-info input");
   var cc = document.querySelector('#credit-card');
@@ -20,24 +18,22 @@
 }());
 
 //Complete this using jquery***
-(function counter(field, countContainer) {
-  const creditCard = document.querySelector('#cc-num');
-  const zip = document.querySelector('#zip');
-  const cvv = document.querySelector('#cvv');
-  var countContainer = creditCard.previousElementSibling;
-  console.log(countContainer);
+(function counter() {
+  const $creditCard = $('#cc-num');
+  const $zip = $('#zip');
+  const $cvv = $('#cvv');
 
-  creditCard.addEventListener('keyup', (e) => {
-    var countContainer = creditCard.previousElementSibling;
-    countContainer.textContent = e.target.value.length + "/16";
+  $creditCard.keyup( (e) => {
+    var $countContainer = $('label[for="cc-num"]').children('span');
+    $countContainer.text(e.target.value.length + "/16");
   })
-  zip.addEventListener('keyup', (e) => {
-    var countContainer = zip.previousElementSibling;
-    countContainer.textContent = e.target.value.length + "/5";
+  $zip.keyup( (e) => {
+    var $countContainer = $('label[for="zip"]').children('span');
+    $countContainer.text(e.target.value.length + "/5");
   })
-  cvv.addEventListener('keyup', (e) => {
-    var countContainer = cvv.previousElementSibling;
-    countContainer.textContent = e.target.value.length + "/3";
+  $cvv.keyup( (e) => {
+    var $countContainer = $('label[for="cvv"]').children('span');
+    $countContainer.text(e.target.value.length + "/3");
   })
 
 }());
@@ -69,17 +65,17 @@ function removeErrorMessage(field) {
 // -------------------------------------------------------------------------
 // --- VALIDATION LIST OBJECT ----------------------------------------------
 var validate = {
-  "name": function(field, value) {                  //Validates name
-    var valid = /^[a-zA-Z ]{2,30}$/.test(value);    //Letters, 2-30 maximum
+  "name": function(field, value) {                  // Validates name
+    var valid = /^[a-zA-Z ]{2,30}$/.test(value);    // Letters, 2-30 maximum
     if (!valid) setErrorMessage(field, "Enter your first and last " + field.id + ". No special characters allowed");
     return valid;
   },
-  "email": function(field, value) {                 //Validates email
-    var valid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value); //
+  "email": function(field, value) {                 // Validates email
+    var valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,63}$/i.test(value); //
     if (!valid) setErrorMessage(field, "Enter a valid " + field.id + " format: jane@doe.com");
     return valid;
   },
-  "cc-num": function(field, value) {                //Validates credit card number
+  "cc-num": function(field, value) {                // Validates credit card number
     var valid = /^(?:\d[ -]*?){13,16}$/.test(value);  
     if (!valid) setErrorMessage(field, "Enter a 13-16 digit number");
     return valid;
@@ -166,12 +162,12 @@ function validatePayment() {
 // --- REQUIRED FIELD VALIDATION -------------------------------------------
 function isRequired(field) {
   var valid;
-  return field.className === "required" ? valid = true : valid = false;
+  return field.className === "required" ? valid = true : valid = false; //If has class required result true, else false. return result
 }
 // --- VALUE MISSING VALIDATION --------------------------------------------
 function valueMissing(field) {
   var valid;
-  return (field.value === "") ? valid = true : valid = false;
+  return (field.value === "") ? valid = true : valid = false; //If value is missing result true, else false. return result
 }
 
 
@@ -180,8 +176,8 @@ function valueMissing(field) {
 // -------------------------------------------------------------------------
 
 (function() {
-  const design = document.querySelector('#design');
-  const color = document.querySelector('#color');
+  const design = document.querySelector('#design'); //
+  const color = document.querySelector('#color');   //
   const defaultOption = '<option><-- Select a T-shirt theme</option>';
   color.innerHTML = defaultOption;
 
@@ -331,17 +327,21 @@ function valueMissing(field) {
 
   form.addEventListener('keyup', (e) => {
     var field = e.target;
-    if (field.disabled || field.type === 'submit' || field.type === 'button') return;  //Don't validate submits, buttons, and disabled fields
+
+    if (field.disabled || 
+        field.type === 'submit' || 
+        field.type === 'button') return;               //Don't validate submits, buttons, and disabled fields
+    
     if (isRequired(field)) {
       isValid = validateThisField(field);
       !isValid ? showErrorMessage(field) : removeErrorMessage(field);
       valid[field.id] = isValid;
     }
-    valid.payment = validatePayment();            //Custom validation
+    valid.payment = validatePayment();                 //Custom validation
   }, true);
 
-  fieldset.addEventListener('change', (e) => {
-    valid.activities = validateActivities();      //Custom validation
+  fieldset.addEventListener('change', (e) => {         //
+    valid.activities = validateActivities();           //Custom validation
   }, false);
 
 // --- ON SUBMIT VALIDATION ------------------------------------------------

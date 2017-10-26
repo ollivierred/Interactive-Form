@@ -14,8 +14,8 @@ button {
 
 body {
   font: 1em/1.5;
-  color: #184f68;
-	background: #accbd9;
+	color: #006898;
+	background: #2cb9f9;
 }
 
 header {
@@ -38,7 +38,8 @@ a {
 
 form {
 	padding: .875em 1.875em 1.875em;
-	background: #85b5ca;
+	border-radius: 10px;
+	background: rgba(255, 255, 255, 0.92);
 }
 
 fieldset,
@@ -92,7 +93,7 @@ input {
 }
 
 input:focus {
-	background: #fff;
+	background: rgba(255, 255, 255, 0.92);
 	border-color: #5e97b0;
 	transition: border-color .4s, background-color .4s;
 }
@@ -105,7 +106,7 @@ input[type="radio"] {
 button {
 	color: #fff;
 	padding: .55em 1.25em;
-	background: #22627e;
+	background: #006898;
 	margin: 1.25em 0 .5em;
 	cursor: pointer;
 }
