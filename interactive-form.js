@@ -1,155 +1,178 @@
 //Number tracker function
-(function numberCounter() {
-  var fields = document.querySelectorAll(".payment-info input");
-  var maxLength = 0;
 
-  for (var i = 0; i < fields.length; i++) {
-    // console.log(fields[i].previousElementSibling);
-    var label = fields[i].previousElementSibling;
-    var value = fields[i].value;
-    // console.log(label);
-    var countingContainer = document.createElement('span');
-    countingContainer.className = "counter";
-    if (fields[i].id === "cc-num") maxLength = 16;
-    if (fields[i].id === "zip") maxLength = 5;
-    if (fields[i].id === "cvv") maxLength = 3;
-    countingContainer.textContent = value.length + "/" + maxLength;
-    fields[i].previousElementSibling.appendChild(countingContainer);
+
+
+(function createCountContainer() {
+  var paymentLabels = document.querySelectorAll(".payment-info input");
+  var cc = document.querySelector('#credit-card');
+  var maxLength = 0;
+  var count = 0;
+
+  for (var i = 0; i < paymentLabels.length; i++) {
+    var countContainer = document.createElement('span');
+        countContainer.className = "counter";
+    if (paymentLabels[i].id === "cc-num") maxLength = 16;
+    if (paymentLabels[i].id === "zip") maxLength = 5;
+    if (paymentLabels[i].id === "cvv") maxLength = 3;
+    paymentLabels[i].previousElementSibling.appendChild(countContainer);
   }
+  
 }());
 
+//Complete this using jquery***
+(function counter(field, countContainer) {
+  const creditCard = document.querySelector('#cc-num');
+  const zip = document.querySelector('#zip');
+  const cvv = document.querySelector('#cvv');
+  var countContainer = creditCard.previousElementSibling;
+  console.log(countContainer);
+
+  creditCard.addEventListener('keyup', (e) => {
+    var countContainer = creditCard.previousElementSibling;
+    countContainer.textContent = e.target.value.length + "/16";
+  })
+  zip.addEventListener('keyup', (e) => {
+    var countContainer = zip.previousElementSibling;
+    countContainer.textContent = e.target.value.length + "/5";
+  })
+  cvv.addEventListener('keyup', (e) => {
+    var countContainer = cvv.previousElementSibling;
+    countContainer.textContent = e.target.value.length + "/3";
+  })
+
+}());
 
 
 // -------------------------------------------------------------------------
 // FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
 // -------------------------------------------------------------------------
-
+// --- SET ERROR MESSAGE FUNCTION ------------------------------------------
 function setErrorMessage(field, message) {
   $(field).data('errorMessage', message);
 };
-
+// --- SHOW ERROR MESSAGE FUNCTION -----------------------------------------
 function showErrorMessage(field) {
   var $field = $(field);
-  // console.log($field);
   var $errorContainer = $field.parent().children('.error');
 
   if (!$errorContainer.length) $errorContainer = $('<span class="error"></span>').insertAfter($field);
   $errorContainer.text($(field).data('errorMessage'));
 };
-
+// --- REMOVE ERROR MESSAGE FUNCTION ---------------------------------------
 function removeErrorMessage(field) {
   var errorContainer = $(field).parent().children('.error');
   errorContainer.remove();
 };
 
-
-
 // -------------------------------------------------------------------------
-// OBJECT FOR VALIDATION BY ID NAME
+// VALIDATES FIELDS DYNAMICALLY BY ID
 // -------------------------------------------------------------------------
-
+// --- VALIDATION LIST OBJECT ----------------------------------------------
 var validate = {
-  "name": function(field, value) {
-    var valid = /^[a-zA-Z ]{2,30}$/.test(value);
+  "name": function(field, value) {                  //Validates name
+    var valid = /^[a-zA-Z ]{2,30}$/.test(value);    //Letters, 2-30 maximum
     if (!valid) setErrorMessage(field, "Enter your first and last " + field.id + ". No special characters allowed");
     return valid;
   },
-  "email": function(field, value) {
-    var valid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value);
+  "email": function(field, value) {                 //Validates email
+    var valid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value); //
     if (!valid) setErrorMessage(field, "Enter a valid " + field.id + " format: jane@doe.com");
     return valid;
   },
-  "cc-num": function(field, value) {
-    var valid = /^(?:\d[ -]*?){13,16}$/.test(value);
+  "cc-num": function(field, value) {                //Validates credit card number
+    var valid = /^(?:\d[ -]*?){13,16}$/.test(value);  
     if (!valid) setErrorMessage(field, "Enter a 13-16 digit number");
     return valid;
   },
-  "zip": function(field, value) {
+  "zip": function(field, value) {                   //Validates zip code
     var valid = /^\d{5}$/.test(value);
     if (!valid) setErrorMessage(field, "Enter a 5-digit number");
     return valid;
   },
-  "cvv": function(field, value) {
+  "cvv": function(field, value) {                   //Validates cvv number
     var valid = /^\d{3}$/.test(value);
     if (!valid) setErrorMessage(field, "Enter a 3-digit number");
     return valid;
   }
-}//End of object
+}
+// --- GENERIC VALIDATION FUNCTION -----------------------------------------
 function validateThisField(field) {
-  var id = field.id, type = field.type, value = field.value;
-  var valid = false;                                                //Flag is set to false
-
-  if (valueMissing(field)) {
-    setErrorMessage(field, "This field is required");               //Sets error message for fields that are empty
-    showErrorMessage();
+  var id = field.id, type = field.type, value = field.value; //Variable for the field's "id", "type", and "value"
+  var valid = false;
+  if (valueMissing(field)) {                         //If no value present
+    setErrorMessage(field, "This field is required");
+    showErrorMessage();                              //Set and show error message for fields that are empty
   } else {
-    valid = validate[id](field, value);                             //Match the field value to its validation function based on "id"
+    valid = validate[id](field, value);              //Match the field value to its validation function based on "id"
   }
   return valid;
-} // -----------------------------------------------------------------------
+}
 
 
 // -------------------------------------------------------------------------
 // CUSTOM VALIDATION FUNCTIONS: ACTIVITIES AND PAYMENT
 // -------------------------------------------------------------------------
-
+// --- ACTIVITIES VALIDATION -----------------------------------------------
 function validateActivities() {
-  var fieldset = document.querySelector('.activities');
-  var legend = document.querySelector('.activities legend');
-  var checklist = document.querySelectorAll('.activities input');
+  var fieldset = document.querySelector('.activities'); //Fieldset surrounding activities
+  var legend = document.querySelector('.activities legend');  //Legend tag inside fieldset
+  var checklist = document.querySelectorAll('.activities input'); //List of all activities
   var valid = false;
   var isChecked = 0;
 
-  for (let i = 0; i < checklist.length; i++) {
-    //Counts all checked boxes
-    if (checklist[i].checked) isChecked++;
+  for (let i = 0; i < checklist.length; i++) {       //Loops through list of checkboxes and count if any checked
+    if (checklist[i].checked) isChecked++
   }
+  isChecked > 0 ? valid = true : valid = false;      //If checked is more than "0" it passes
 
-  isChecked > 0 ? valid = true : valid = false;
-
-  if (!valid) {
+  if (!valid) {                                      //If not valid
     setErrorMessage(fieldset, "Select at least one activity");
-    showErrorMessage(fieldset);
+    showErrorMessage(fieldset);                      //Set and show error message
   } else {
-    removeErrorMessage(fieldset);
+    removeErrorMessage(fieldset);                    //Remove if valid
   }
-  return valid;
-} // -------------------------------------------------------------------
+  return valid;                                      //Return valid state
+}
 
+// --- PAYMENT VALIDATION -----------------------------------------------
 function validatePayment() {
-  var payment = document.querySelector("#payment");
-  var creditCard = {};
+  var option = document.querySelector("#payment");   //Get options parent element reference
+  var fields = document.querySelectorAll(".payment-info input");  //Get list of each option
+  var creditCard = {};                               //Stores the valid state of each credit card field
   var valid = false;
 
-  if (payment.selectedIndex !== 0) {
-    return valid = true;
+  if (option.selectedIndex !== 0) {                  //If option's selected index is NOT "0" || "creditcard"
+    for (var i = 0; i < fields.length; i++) {        //Clear the credit card input fields
+      fields[i].value = "";
+    }
+    return valid = true;                             //set valid to true
   } else {
-    var fields = document.querySelectorAll(".payment-info input");
     for (var i = 0; i < fields.length; i++) {
-      valid = validateThisField(fields[i]);                                  //Loops through and validates credit card fields
+      valid = validateThisField(fields[i]);          //Loops through and validates credit card fields
       !valid ? showErrorMessage(fields[i]) : removeErrorMessage(fields[i]);   //Shows or removes error message if valid is true / false
-      creditCard[fields[i].id] = valid;                                   //Adds fields to the valid object
+      creditCard[fields[i].id] = valid;              //Adds fields to the valid object
     }
     for (var field in creditCard) {
-      if (!creditCard[field]) valid = false;
+      if (!creditCard[field]) valid = false;         //If any credit card field fails, payment is false
     }
-    return valid;
+    return valid;                                    //Returns the valid state of payment
   }
-} // --------------------------------------------------------------------
+}
 
 
 // -------------------------------------------------------------------------
 // VALIDATION HELPER FUNCTIONS
 // -------------------------------------------------------------------------
+// --- REQUIRED FIELD VALIDATION -------------------------------------------
 function isRequired(field) {
   var valid;
   return field.className === "required" ? valid = true : valid = false;
-} // -----------------------------------------------------------------------
+}
+// --- VALUE MISSING VALIDATION --------------------------------------------
 function valueMissing(field) {
   var valid;
   return (field.value === "") ? valid = true : valid = false;
-} // -----------------------------------------------------------------------
-
+}
 
 
 // -------------------------------------------------------------------------
@@ -188,7 +211,7 @@ function valueMissing(field) {
           color.innerHTML = options;
         }
     }); //”T-Shirt Info” EventListener
-}()); //Immediately invoked function
+}());
 
 
 
@@ -209,7 +232,7 @@ function valueMissing(field) {
     } else if (!checked && boxValue === thisName) {
         conflict.disabled = false;
     }
-  };// checkboxControl function
+  }; // checkboxControl function
 
   fieldset.addEventListener('change', function(e) {
     const checkbox = e.target;
@@ -223,8 +246,7 @@ function valueMissing(field) {
     } else {
       if (isChecked) runningTotal += 100;
       if (!isChecked) runningTotal -= 100;
-      //End of Inner if, else statement
-    }//End of Outer if, else statement
+    }
     priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
 
     // Stores the activities, would like this be be more dynamic
@@ -244,6 +266,7 @@ function valueMissing(field) {
     checkboxControl(isChecked, itsValue, "js-libs", event.node);
     checkboxControl(isChecked, itsValue, "node", event.jsLibs);
   });// activities EventListener
+
 }());// End of function
 
 
@@ -274,8 +297,8 @@ function valueMissing(field) {
     if (e.target.value === "other") {
       field.otherField.style.display = "inherit";
     } else {
-        field.otherField.style.display = "none";
-        field.otherField.value = "";
+      field.otherField.style.display = "none";
+      field.otherField.value = "";
     }
   });
 
@@ -283,21 +306,14 @@ function valueMissing(field) {
     field.creditCard.style.display = creditCard;
     field.bitcoin.style.display = bitcoin;
     field.paypal.style.display = paypal;
-  }
+  };
 
   //Control display when payment option is selected
   payment.addEventListener('change', (e) => {
     var option = e.target;
-    if (option.value === "paypal") {
-      // removeRequiredClass(elements);
-      showAndHide(field, 'none', 'none', 'inherit');
-    } else if (option.value === "bitcoin") {
-      // removeRequiredClass(elements);
-      showAndHide(field, 'none', 'inherit', 'none')
-    } else {
-      // addRequiredClass(elements);
-      showAndHide(field, 'inherit', 'none', 'none')
-    }
+    if (option.value === "credit card") showAndHide(field, 'inherit', 'none', 'none');
+    if (option.value === "paypal") showAndHide(field, 'none', 'none', 'inherit');
+    if (option.value === "bitcoin") showAndHide(field, 'none', 'inherit', 'none');
   });
 
 }());
@@ -305,33 +321,32 @@ function valueMissing(field) {
 // -------------------------------------------------------------------------
 // VALIDATION ONSUBMIT / LIVE
 // -------------------------------------------------------------------------
-
+// --- LIVE FIELD VALIDATION -----------------------------------------------
 (function() {
   const form = document.register;
+  const fieldset = document.querySelector('.activities');
   var isFormValid = false;
+  var isValid = false;
+  var valid = {};
 
-  form.addEventListener('blur', (e) => {
+  form.addEventListener('keyup', (e) => {
     var field = e.target;
-    console.log(field);
-    // Don't validate submits, buttons, file and reset inputs, and disabled fields
-   if (field.disabled || field.type === 'submit' || field.type === 'button') return;
-   var valid = {}, isValid = false;
-
-   if (isRequired(field)) {
-     isValid = validateThisField(field);
-     !isValid ? showErrorMessage(field) : removeErrorMessage(field);
-     valid[field.id] = isValid;
-   }
-    //Custom validation
-    valid.activities = validateActivities();
-    valid.payment = validatePayment();
-
+    if (field.disabled || field.type === 'submit' || field.type === 'button') return;  //Don't validate submits, buttons, and disabled fields
+    if (isRequired(field)) {
+      isValid = validateThisField(field);
+      !isValid ? showErrorMessage(field) : removeErrorMessage(field);
+      valid[field.id] = isValid;
+    }
+    valid.payment = validatePayment();            //Custom validation
   }, true);
 
+  fieldset.addEventListener('change', (e) => {
+    valid.activities = validateActivities();      //Custom validation
+  }, false);
 
+// --- ON SUBMIT VALIDATION ------------------------------------------------
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    var valid = {}, isValid = false;
     for (let i = 0; i < form.length; i++) {
       var field = form[i];
       if (isRequired(field)) {
@@ -353,8 +368,7 @@ function valueMissing(field) {
       }
       isFormValid = true;
     }
-    !isFormValid ? e.preventDefault() : alert("Yay, your can submit!");
+    !isFormValid ? e.preventDefault() : alert("Yay, this form is complete!");
   });
 
 }());
-// -------------------------------------------------------------------------
