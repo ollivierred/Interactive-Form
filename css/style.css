@@ -14,8 +14,8 @@ button {
 
 body {
   font: 1em/1.5;
-	color: #006898;
-	background: #2cb9f9;
+	color: #009688;
+	background: #E0F2F1;
 }
 
 header {
@@ -61,7 +61,7 @@ button {
 legend {
 	font-weight: 500;
 	padding-top: .5em;
-	border-top: 2px solid #679cb3;
+	border-top: 2px solid #4DB6AC;
 	margin-bottom: 1.125em;
 }
 
@@ -87,14 +87,14 @@ input {
 	font-size: 1em;
 	font-weight: 500;
 	padding: .8em;
-	background: #c1deeb;
-	border: 2px solid #c1deeb;
+	background: #E0F2F1;
+	border: 2px solid #4DB6AC;
 	outline: none;
 }
 
 input:focus {
 	background: rgba(255, 255, 255, 0.92);
-	border-color: #5e97b0;
+	border-color: #4DB6AC;
 	transition: border-color .4s, background-color .4s;
 }
 
@@ -104,15 +104,15 @@ input[type="radio"] {
 }
 
 button {
-	color: #fff;
+	color: #E0F2F1;
 	padding: .55em 1.25em;
-	background: #006898;
+	background: #009688;
 	margin: 1.25em 0 .5em;
 	cursor: pointer;
 }
 
 button:hover {
-	background: #184c62;
+	background: #00695C;
 }
 
 /* =================================
