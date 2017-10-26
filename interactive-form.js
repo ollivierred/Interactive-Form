@@ -140,6 +140,7 @@ function validatePayment() {
   if (option.selectedIndex !== 0) {                  //If option's selected index is NOT "0" || "creditcard"
     for (var i = 0; i < fields.length; i++) {        //Clear the credit card input fields
       fields[i].value = "";
+      removeErrorMessage(fields[i]);
     }
     return valid = true;                             //set valid to true
   } else {
