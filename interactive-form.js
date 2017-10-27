@@ -1,44 +1,3 @@
-//Number tracker function
-
-(function createCountContainer() {
-  var paymentLabels = document.querySelectorAll(".payment-info input");
-  var cc = document.querySelector('#credit-card');
-  var maxLength = 0;
-  var count = 0;
-
-  for (var i = 0; i < paymentLabels.length; i++) {
-    var countContainer = document.createElement('span');
-        countContainer.className = "counter";
-    if (paymentLabels[i].id === "cc-num") maxLength = 16;
-    if (paymentLabels[i].id === "zip") maxLength = 5;
-    if (paymentLabels[i].id === "cvv") maxLength = 3;
-    paymentLabels[i].previousElementSibling.appendChild(countContainer);
-  }
-  
-}());
-
-//Complete this using jquery***
-(function counter() {
-  const $creditCard = $('#cc-num');
-  const $zip = $('#zip');
-  const $cvv = $('#cvv');
-
-  $creditCard.keyup( (e) => {
-    var $countContainer = $('label[for="cc-num"]').children('span');
-    $countContainer.text(e.target.value.length + "/16");
-  })
-  $zip.keyup( (e) => {
-    var $countContainer = $('label[for="zip"]').children('span');
-    $countContainer.text(e.target.value.length + "/5");
-  })
-  $cvv.keyup( (e) => {
-    var $countContainer = $('label[for="cvv"]').children('span');
-    $countContainer.text(e.target.value.length + "/3");
-  })
-
-}());
-
-
 // -------------------------------------------------------------------------
 // FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
 // -------------------------------------------------------------------------
@@ -58,7 +17,216 @@ function showErrorMessage(field) {
 function removeErrorMessage(field) {
   var errorContainer = $(field).parent().children('.error');
   errorContainer.remove();
-};
+};//Number tracker function
+
+// -------------------------------------------------------------------------
+// CHARACTER COOUNTER FUNCTIONS
+// -------------------------------------------------------------------------
+// --- CREATE COUNT CONTAINER FUNCTION -------------------------------------
+(function createCountContainer() {
+  var paymentLabels = document.querySelectorAll(".payment-info input");
+  var cc = document.querySelector('#credit-card');
+  var maxLength = 0;
+  var count = 0;
+
+  for (var i = 0; i < paymentLabels.length; i++) {
+    var countContainer = document.createElement('span');
+        countContainer.className = "counter";
+    if (paymentLabels[i].id === "cc-num") maxLength = 16;
+    if (paymentLabels[i].id === "zip") maxLength = 5;
+    if (paymentLabels[i].id === "cvv") maxLength = 3;
+    paymentLabels[i].previousElementSibling.appendChild(countContainer);
+  }
+  
+}());
+
+// --- COUNTER FUNCTION ----------------------------------------------------
+(function counter() {
+  const creditCard = document.querySelector('#cc-num');
+  const zip = document.querySelector('#zip');
+  const cvv = document.querySelector('#cvv');
+
+  creditCard.addEventListener('input', function() {
+    var $countContainer = $('label[for="cc-num"]').children('span');
+    $countContainer.text(this.value.length + "/16");
+  })
+  zip.addEventListener('input', function() {
+    var $countContainer = $('label[for="zip"]').children('span');
+    $countContainer.text(this.value.length + "/5");
+  })
+  cvv.addEventListener('input', function() {
+    var $countContainer = $('label[for="cvv"]').children('span');
+    $countContainer.text(this.value.length + "/3");
+  })
+
+}());
+
+
+// -------------------------------------------------------------------------
+// T-SHIRT INFO FUNCTION
+// -------------------------------------------------------------------------
+
+(function() {
+  const design = document.querySelector('#design'); //
+  const color = document.querySelector('#color');   //
+  const defaultOption = '<option><-- Select a T-shirt theme</option>';
+  color.innerHTML = defaultOption;
+
+  const jsPuns =
+    '<option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>' +
+    '<option value="darkslategrey">Dark Slate Grey (JS Puns shirt only)</option>' +
+    '<option value="gold">Gold (JS Puns shirt only)</option>';
+
+  const heartJs =
+    '<option value="tomato">Tomato (I &#9829; JS shirt only)</option>' +
+    '<option value="steelblue">Steel Blue (I &#9829; JS shirt only)</option>' +
+    '<option value="dimgrey">Dim Grey (I &#9829; JS shirt only)</option>';
+
+  //Show and hide input field for the option "other"
+    design.addEventListener('change', function() {
+      let options = '<option value="default" selected>Select a Color</option>';
+
+      if (this.value === 'default') {
+        color.innerHTML = defaultOption;
+        return;
+      }
+        if (this.value === "js puns") {
+          options += jsPuns;
+          color.innerHTML = options;
+        } else if (this.value === "heart js") {
+          options += heartJs;
+          color.innerHTML = options;
+        }
+    });
+
+}());
+
+
+
+// -------------------------------------------------------------------------
+// DISABLE / ENABLE CHECKBOX FUNCTION
+// -------------------------------------------------------------------------
+
+(function() {
+  const fieldset = document.querySelector('.activities');
+  const priceDiv = document.createElement('div');
+  var runningTotal = 0;
+  priceDiv.id = "running-total";
+  fieldset.appendChild(priceDiv);
+
+  function checkboxControl(checked, boxValue, thisName ,conflict) {   // Disables / Enables checkboxes...
+    if (checked && boxValue === thisName) {
+        conflict.disabled = true;
+    } else if (!checked && boxValue === thisName) {
+        conflict.disabled = false;
+    }
+  }; // checkboxControl function
+
+  fieldset.addEventListener('change', function(e) {
+    const checkbox = e.target;
+    const isChecked = checkbox.checked;
+    const itsValue = checkbox.value;
+
+    if (isChecked && itsValue === "all") {
+      runningTotal += 200;
+    } else if (!isChecked && itsValue === "all") {
+      runningTotal -= 200;
+    } else {
+      if (isChecked) runningTotal += 100;
+      if (!isChecked) runningTotal -= 100;
+    }
+    priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
+
+    // Stores the activities, would like this be be more dynamic
+    var event = {
+      all: fieldset.querySelector('input[value="all"]'),
+      jsFrameworks: fieldset.querySelector('input[value="js-frameworks"]'),
+      jsLibs: fieldset.querySelector('input[value="js-libs"]'),
+      express: fieldset.querySelector('input[value="express"]'),
+      node: fieldset.querySelector('input[value="node"]'),
+      buildTools: fieldset.querySelector('input[value="build-tools"]'),
+      npm: fieldset.querySelector('input[value="npm"]')
+    }
+    // Prevent selection of activities that conflict
+    // checkedBox, checkedBoxName, thisName ,conflict
+    checkboxControl(isChecked, itsValue, "js-frameworks", event.express);
+    checkboxControl(isChecked, itsValue, "express", event.jsFrameworks);
+    checkboxControl(isChecked, itsValue, "js-libs", event.node);
+    checkboxControl(isChecked, itsValue, "node", event.jsLibs);
+  });// activities EventListener
+
+}());// End of function
+
+
+
+// -------------------------------------------------------------------------
+// PAYMENT AND JOB ROLE FUNCTION
+// -------------------------------------------------------------------------
+
+(function() {
+  function showAndHide(field, creditCard, bitcoin, paypal) {        //Show / Hide option helper function
+    field.creditCard.style.display = creditCard;
+    field.bitcoin.style.display = bitcoin;
+    field.paypal.style.display = paypal;
+  };
+
+  function addRequiredClass() {
+    //Add class "required" to cc-num
+    //Add class "required" to zip
+    //Add class "required" to cvv
+  };
+
+  function removeRequiedClass() {
+    //remove class "required" to cc-num
+    //remove class "required" to zip
+    //remove class "required" to cvv
+  };
+ 
+  var field = {                                                     // Holds the list of elements to be hidden
+    otherField: document.querySelector('#other-title'),
+    creditCard: document.querySelector("#credit-card"),
+    paypal: document.querySelector("#paypal"),
+    bitcoin: document.querySelector("#bitcoin")
+  }
+  //Hides the specified form elements
+  for (var el in field) {
+    field[el].style.display = "none";
+  };
+  field.creditCard.style.display = 'inherit';                       // Credit-card shows by default
+
+  // var $payOptions = $('.payment-info div');
+  // $payOptions.hide();
+
+  const title = document.querySelector('#title');                   //Show and hide input field for the option "other"
+  title.addEventListener('change', function(e) {
+    if (this.value === "other") {
+      field.otherField.style.display = "inherit";
+    } else {
+      field.otherField.style.display = "none";
+      field.otherField.value = "";
+    }
+  });
+
+  const payment = document.querySelector("#payment");               //Control display when payment option is selected
+  payment.addEventListener('change', function(e) {
+    console.log(this);
+    var $cardFields = $('#credit-card input');
+
+    if (this.value === "credit card") {
+      showAndHide(field, 'inherit', 'none', 'none');
+    }
+    if (this.value === "paypal") {
+      showAndHide(field, 'none', 'none', 'inherit');
+      $cardFields.val("");
+    }
+    if (this.value === "bitcoin") {
+      showAndHide(field, 'none', 'inherit', 'none');
+      $cardFields.val("");
+    }
+  });
+
+}());
+
 
 // -------------------------------------------------------------------------
 // VALIDATES FIELDS DYNAMICALLY BY ID
@@ -131,29 +299,18 @@ function validateActivities() {
 }
 
 // --- PAYMENT VALIDATION -----------------------------------------------
-function validatePayment() {
-  var option = document.querySelector("#payment");   //Get options parent element reference
-  var fields = document.querySelectorAll(".payment-info input");  //Get list of each option
+function validatePayment(field) {
   var creditCard = {};                               //Stores the valid state of each credit card field
   var valid = false;
 
-  if (option.selectedIndex !== 0) {                  //If option's selected index is NOT "0" || "creditcard"
-    for (var i = 0; i < fields.length; i++) {        //Clear the credit card input fields
-      fields[i].value = "";
-      removeErrorMessage(fields[i]);
-    }
-    return valid = true;                             //set valid to true
-  } else {
-    for (var i = 0; i < fields.length; i++) {
-      valid = validateThisField(fields[i]);          //Loops through and validates credit card fields
-      !valid ? showErrorMessage(fields[i]) : removeErrorMessage(fields[i]);   //Shows or removes error message if valid is true / false
-      creditCard[fields[i].id] = valid;              //Adds fields to the valid object
-    }
-    for (var field in creditCard) {
-      if (!creditCard[field]) valid = false;         //If any credit card field fails, payment is false
-    }
-    return valid;                                    //Returns the valid state of payment
+  valid = validateThisField(field);          //Loops through and validates credit card fields
+  !valid ? showErrorMessage(field) : removeErrorMessage(field);   //Shows or removes error message if valid is true / false
+  creditCard[field.id] = valid;              //Adds fields to the valid object
+
+  for (var field in creditCard) {
+    if (!creditCard[field]) valid = false;         //If any credit card field fails, payment is false
   }
+  return valid;                                    //Returns the valid state of payment
 }
 
 
@@ -173,177 +330,50 @@ function valueMissing(field) {
 
 
 // -------------------------------------------------------------------------
-// T-SHIRT INFO FUNCTION
-// -------------------------------------------------------------------------
-
-(function() {
-  const design = document.querySelector('#design'); //
-  const color = document.querySelector('#color');   //
-  const defaultOption = '<option><-- Select a T-shirt theme</option>';
-  color.innerHTML = defaultOption;
-
-  const jsPuns =
-    '<option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>' +
-    '<option value="darkslategrey">Dark Slate Grey (JS Puns shirt only)</option>' +
-    '<option value="gold">Gold (JS Puns shirt only)</option>';
-
-  const heartJs =
-    '<option value="tomato">Tomato (I &#9829; JS shirt only)</option>' +
-    '<option value="steelblue">Steel Blue (I &#9829; JS shirt only)</option>' +
-    '<option value="dimgrey">Dim Grey (I &#9829; JS shirt only)</option>';
-
-  //Show and hide input field for the option "other"
-    design.addEventListener('change', function() {
-      let options = '<option value="default" selected>Select a Color</option>';
-
-      if (this.value === 'default') {
-        color.innerHTML = defaultOption;
-        return;
-      }
-        if (this.value === "js puns") {
-          options += jsPuns;
-          color.innerHTML = options;
-        } else if (this.value === "heart js") {
-          options += heartJs;
-          color.innerHTML = options;
-        }
-    }); //”T-Shirt Info” EventListener
-}());
-
-
-
-// -------------------------------------------------------------------------
-// DISABLE / ENABLE CHECKBOX FUNCTION
-// -------------------------------------------------------------------------
-
-(function() {
-  const fieldset = document.querySelector('.activities');
-  const priceDiv = document.createElement('div');
-  var runningTotal = 0;
-  priceDiv.id = "running-total";
-  fieldset.appendChild(priceDiv);
-
-  function checkboxControl(checked, boxValue, thisName ,conflict) {   // Disables / Enables checkboxes...
-    if (checked && boxValue === thisName) {
-        conflict.disabled = true;
-    } else if (!checked && boxValue === thisName) {
-        conflict.disabled = false;
-    }
-  }; // checkboxControl function
-
-  fieldset.addEventListener('change', function(e) {
-    const checkbox = e.target;
-    const isChecked = checkbox.checked;
-    const itsValue = checkbox.value;
-
-    if (isChecked && itsValue === "all") {
-      runningTotal += 200;
-    } else if (!isChecked && itsValue === "all") {
-      runningTotal -= 200;
-    } else {
-      if (isChecked) runningTotal += 100;
-      if (!isChecked) runningTotal -= 100;
-    }
-    priceDiv.innerHTML = '<span>Total: $' + runningTotal +'</span>';
-
-    // Stores the activities, would like this be be more dynamic
-    var event = {
-      all: fieldset.querySelector('input[value="all"]'),
-      jsFrameworks: fieldset.querySelector('input[value="js-frameworks"]'),
-      jsLibs: fieldset.querySelector('input[value="js-libs"]'),
-      express: fieldset.querySelector('input[value="express"]'),
-      node: fieldset.querySelector('input[value="node"]'),
-      buildTools: fieldset.querySelector('input[value="build-tools"]'),
-      npm: fieldset.querySelector('input[value="npm"]')
-    }
-    // Prevent selection of activities that conflict
-    // checkedBox, checkedBoxName, thisName ,conflict
-    checkboxControl(isChecked, itsValue, "js-frameworks", event.express);
-    checkboxControl(isChecked, itsValue, "express", event.jsFrameworks);
-    checkboxControl(isChecked, itsValue, "js-libs", event.node);
-    checkboxControl(isChecked, itsValue, "node", event.jsLibs);
-  });// activities EventListener
-
-}());// End of function
-
-
-
-// -------------------------------------------------------------------------
-// PAYMENT AND JOB ROLE FUNCTION
-// -------------------------------------------------------------------------
-
-(function() {
-  const payment = document.querySelector("#payment");
-  const elements = document.querySelectorAll('#credit-card input');
-
-  var field = {                                                     // Holds the list of elements to be hidden
-    otherField: document.querySelector('#other-title'),
-    creditCard: document.querySelector("#credit-card"),
-    paypal: document.querySelector("#paypal"),
-    bitcoin: document.querySelector("#bitcoin")
-  }
-  //Hides the specified form elements
-  for (var el in field) {
-    field[el].style.display = "none";
-  };
-  field.creditCard.style.display = 'inherit';                       // Credit-card shows by default
-
-  //Show and hide input field for the option "other"
-  const jobRole = document.querySelector('#title');
-  jobRole.addEventListener('change', function(e) {
-    if (e.target.value === "other") {
-      field.otherField.style.display = "inherit";
-    } else {
-      field.otherField.style.display = "none";
-      field.otherField.value = "";
-    }
-  });
-
-  function showAndHide(field, creditCard, bitcoin, paypal) {        //Show / Hide option helper function
-    field.creditCard.style.display = creditCard;
-    field.bitcoin.style.display = bitcoin;
-    field.paypal.style.display = paypal;
-  };
-
-  //Control display when payment option is selected
-  payment.addEventListener('change', (e) => {
-    var option = e.target;
-    if (option.value === "credit card") showAndHide(field, 'inherit', 'none', 'none');
-    if (option.value === "paypal") showAndHide(field, 'none', 'none', 'inherit');
-    if (option.value === "bitcoin") showAndHide(field, 'none', 'inherit', 'none');
-  });
-
-}());
-
-// -------------------------------------------------------------------------
-// VALIDATION ONSUBMIT / LIVE
+// ONSUBMIT / LIVE VALIDATION 
 // -------------------------------------------------------------------------
 // --- LIVE FIELD VALIDATION -----------------------------------------------
 (function() {
   const form = document.register;
   const fieldset = document.querySelector('.activities');
+  var option = document.querySelector("#payment");   //Get options parent element reference
+  var creditCard = document.querySelector("#credit-card");   //Get list of each option
+  
   var isFormValid = false;
   var isValid = false;
   var valid = {};
 
   form.addEventListener('keyup', (e) => {
     var field = e.target;
-
-    if (field.disabled || 
-        field.type === 'submit' || 
-        field.type === 'button') return;               //Don't validate submits, buttons, and disabled fields
     
-    if (isRequired(field)) {
-      isValid = validateThisField(field);
-      !isValid ? showErrorMessage(field) : removeErrorMessage(field);
-      valid[field.id] = isValid;
-    }
-    valid.payment = validatePayment();                 //Custom validation
-  }, true);
+    if (field.disabled || field.type === 'submit' || 
+        field.type === 'button') return;              //Don't validate submits, buttons, and disabled fields
+    
+    if (!isRequired(field)) return;
 
-  fieldset.addEventListener('change', (e) => {         //
-    valid.activities = validateActivities();           //Custom validation
+    isValid = validateThisField(field);
+    !isValid ? showErrorMessage(field) : removeErrorMessage(field);
+    
+    valid[field.id] = isValid;
   }, false);
+
+  option.addEventListener('change', (e) => {          //
+    // console.log(e.target.selectedIndex);
+    if (e.target.selectedIndex !== 0) {
+      isValid = true;
+      valid.payment = isValid;
+    }
+  }, false);
+
+  creditCard.addEventListener('input', (e) => {           //
+      var field = e.target;
+      valid.payment = validatePayment(field);       //Custom validation
+  }, false);                                        //If option's selected index is NOT "0" || "creditcard"
+
+  fieldset.addEventListener('change', (e) => {        //
+    valid.activities = validateActivities();          //Custom validation
+  }, false);
+  console.log(valid);
 
 // --- ON SUBMIT VALIDATION ------------------------------------------------
   form.addEventListener('submit', (e) => {
