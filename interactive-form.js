@@ -158,7 +158,6 @@ function removeErrorMessage(field) {
 }());// End of function
 
 
-
 // -------------------------------------------------------------------------
 // PAYMENT AND JOB ROLE FUNCTION
 // -------------------------------------------------------------------------
@@ -170,62 +169,67 @@ function removeErrorMessage(field) {
     field.paypal.style.display = paypal;
   };
 
-  function addRequiredClass() {
-    //Add class "required" to cc-num
-    //Add class "required" to zip
-    //Add class "required" to cvv
-  };
-
-  function removeRequiedClass() {
-    //remove class "required" to cc-num
-    //remove class "required" to zip
-    //remove class "required" to cvv
-  };
- 
   var field = {                                                     // Holds the list of elements to be hidden
     otherField: document.querySelector('#other-title'),
     creditCard: document.querySelector("#credit-card"),
     paypal: document.querySelector("#paypal"),
     bitcoin: document.querySelector("#bitcoin")
   }
+
+  const title = document.querySelector('#title');       //
+  const payment = document.querySelector("#payment");   //Reference to parent div
+  var $cardFields = $('#credit-card input');            //All input fields in credit card div
+
   //Hides the specified form elements
   for (var el in field) {
-    field[el].style.display = "none";
+    field[el].style.display = "none";                   //Hides all fields stored in the above object "field"
   };
-  field.creditCard.style.display = 'inherit';                       // Credit-card shows by default
+    field.creditCard.style.display = 'inherit';         // Credit-card shows by default
+    $cardFields.addClass("required");
 
-  // var $payOptions = $('.payment-info div');
-  // $payOptions.hide();
-
-  const title = document.querySelector('#title');                   //Show and hide input field for the option "other"
-  title.addEventListener('change', function(e) {
+  // --- JOB TITLE EVENT LISTENER ----------------------------------------------
+  title.addEventListener('change', function(e) {        //Show and hide input field for the option "other"
     if (this.value === "other") {
-      field.otherField.style.display = "inherit";
+      field.otherField.style.display = "inherit";       //If option is other, show hidden input field
     } else {
       field.otherField.style.display = "none";
-      field.otherField.value = "";
+      field.otherField.value = "";                      //If option is changed, hide the input field
     }
   });
 
-  const payment = document.querySelector("#payment");               //Control display when payment option is selected
-  payment.addEventListener('change', function(e) {
-    console.log(this);
-    var $cardFields = $('#credit-card input');
-
-    if (this.value === "credit card") {
-      showAndHide(field, 'inherit', 'none', 'none');
+  // --- PAYMENT EVENT LISTENER ----------------------------------------------
+  payment.addEventListener('change', function() {       //Control display when payment option is selected
+    if (this.value === "credit card") {                 //If option is credit card
+      showAndHide(field, 'inherit', 'none', 'none');    //Show card fields
+      $cardFields.addClass("required");                 //Add class required to card fields
     }
-    if (this.value === "paypal") {
-      showAndHide(field, 'none', 'none', 'inherit');
-      $cardFields.val("");
+    if (this.value === "paypal") {                      //If option is paypal
+      showAndHide(field, 'none', 'none', 'inherit');    //Show paypal container
+      $cardFields.val("");                              //Reset card field content
+      $cardFields.removeClass("required");              //Remove the class required
     }
-    if (this.value === "bitcoin") {
-      showAndHide(field, 'none', 'inherit', 'none');
-      $cardFields.val("");
+    if (this.value === "bitcoin") {                     //If option is bitcoin
+      showAndHide(field, 'none', 'inherit', 'none');    //Show bitcoin container
+      $cardFields.val("");                              //Reset card field content
+      $cardFields.removeClass("required");              //Remove the class required
     }
   });
 
 }());
+
+// -------------------------------------------------------------------------
+// VALIDATION HELPER FUNCTIONS
+// -------------------------------------------------------------------------
+// --- REQUIRED FIELD VALIDATION -------------------------------------------
+function isRequired(field) {
+  var valid;
+  return field.className === "required" ? valid = true : valid = false;   // If has class required result true, else false. return result
+}
+// --- VALUE MISSING VALIDATION --------------------------------------------
+function valueMissing(field) {
+  var valid;
+  return (field.value === "") ? valid = true : valid = false;   // If value is missing result true, else false. return result
+}
 
 
 // -------------------------------------------------------------------------
@@ -279,7 +283,6 @@ function validateThisField(field) {
 // --- ACTIVITIES VALIDATION -----------------------------------------------
 function validateActivities() {
   var fieldset = document.querySelector('.activities'); //Fieldset surrounding activities
-  var legend = document.querySelector('.activities legend');  //Legend tag inside fieldset
   var checklist = document.querySelectorAll('.activities input'); //List of all activities
   var valid = false;
   var isChecked = 0;
@@ -300,32 +303,17 @@ function validateActivities() {
 
 // --- PAYMENT VALIDATION -----------------------------------------------
 function validatePayment(field) {
-  var creditCard = {};                               //Stores the valid state of each credit card field
-  var valid = false;
+  var id = field.id,  value = field.value,  valid = false,  creditCard = {};   //Stores the valid state of each credit card field 
 
-  valid = validateThisField(field);          //Loops through and validates credit card fields
+  valid = validate[id](field, value);                //Loops through and validates credit card fields
   !valid ? showErrorMessage(field) : removeErrorMessage(field);   //Shows or removes error message if valid is true / false
-  creditCard[field.id] = valid;              //Adds fields to the valid object
+  
+  creditCard[field.id] = valid;                      //Adds fields to the valid object
 
   for (var field in creditCard) {
-    if (!creditCard[field]) valid = false;         //If any credit card field fails, payment is false
+    if (!creditCard[field]) valid = false;           //If any credit card field fails, payment is false
   }
-  return valid;                                    //Returns the valid state of payment
-}
-
-
-// -------------------------------------------------------------------------
-// VALIDATION HELPER FUNCTIONS
-// -------------------------------------------------------------------------
-// --- REQUIRED FIELD VALIDATION -------------------------------------------
-function isRequired(field) {
-  var valid;
-  return field.className === "required" ? valid = true : valid = false; //If has class required result true, else false. return result
-}
-// --- VALUE MISSING VALIDATION --------------------------------------------
-function valueMissing(field) {
-  var valid;
-  return (field.value === "") ? valid = true : valid = false; //If value is missing result true, else false. return result
+  return valid;                                      //Returns the valid state of payment
 }
 
 
@@ -336,7 +324,7 @@ function valueMissing(field) {
 (function() {
   const form = document.register;
   const fieldset = document.querySelector('.activities');
-  var option = document.querySelector("#payment");   //Get options parent element reference
+  var option = document.querySelector("#payment");           //Get options parent element reference
   var creditCard = document.querySelector("#credit-card");   //Get list of each option
   
   var isFormValid = false;
@@ -345,39 +333,37 @@ function valueMissing(field) {
 
   form.addEventListener('keyup', (e) => {
     var field = e.target;
-    
-    if (field.disabled || field.type === 'submit' || 
+    if (field.disabled || 
+        field.type === 'submit' || 
         field.type === 'button') return;              //Don't validate submits, buttons, and disabled fields
-    
-    if (!isRequired(field)) return;
+    if (!isRequired(field)) return;                   //Don't validate a field if there is no required class attribute
 
     isValid = validateThisField(field);
     !isValid ? showErrorMessage(field) : removeErrorMessage(field);
-    
     valid[field.id] = isValid;
   }, false);
 
-  option.addEventListener('change', (e) => {          //
-    // console.log(e.target.selectedIndex);
+  fieldset.addEventListener('change', (e) => {        //Activities event listener
+    valid.activities = validateActivities();          //Custom validation
+  }, false);
+
+  option.addEventListener('change', (e) => {          //Event listener for payment option selection
     if (e.target.selectedIndex !== 0) {
       isValid = true;
       valid.payment = isValid;
     }
   }, false);
 
-  creditCard.addEventListener('input', (e) => {           //
+  creditCard.addEventListener('input', (e) => {       //Event listener for credit card fields
       var field = e.target;
-      valid.payment = validatePayment(field);       //Custom validation
-  }, false);                                        //If option's selected index is NOT "0" || "creditcard"
+      valid.payment = validatePayment(field);         //Custom validation
+  }, false);                                          //If option's selected index is NOT "0" || "creditcard"
 
-  fieldset.addEventListener('change', (e) => {        //
-    valid.activities = validateActivities();          //Custom validation
-  }, false);
-  console.log(valid);
+  // console.log(valid);
 
 // --- ON SUBMIT VALIDATION ------------------------------------------------
   form.addEventListener('submit', (e) => {
-    e.preventDefault();
+    var valid = {};
     for (let i = 0; i < form.length; i++) {
       var field = form[i];
       if (isRequired(field)) {
@@ -386,11 +372,9 @@ function valueMissing(field) {
         valid[field.id] = isValid;
       }
     }
-
-    //Custom validation
-    valid.activities = validateActivities();
-    valid.payment = validatePayment();
-    console.log(valid);
+    
+    valid.activities = validateActivities();          //Custom validation
+    // console.log(valid);
 
     for (var field in valid) {
       if (!valid[field]) {
