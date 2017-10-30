@@ -17,7 +17,7 @@ function showErrorMessage(field) {
 function removeErrorMessage(field) {
   var errorContainer = $(field).parent().children('.error');
   errorContainer.remove();
-};//Number tracker function
+};
 
 // -------------------------------------------------------------------------
 // CHARACTER COOUNTER FUNCTIONS
@@ -29,14 +29,23 @@ function removeErrorMessage(field) {
   var maxLength = 0;
   var count = 0;
 
-  for (var i = 0; i < paymentLabels.length; i++) {
+  // for (var i = 0; i < paymentLabels.length; i += 1) {
+  //   var countContainer = document.createElement('span');
+  //       countContainer.className = "counter";
+  //   if (paymentLabels[i].id === "cc-num") maxLength = 16;
+  //   if (paymentLabels[i].id === "zip") maxLength = 5;
+  //   if (paymentLabels[i].id === "cvv") maxLength = 3;
+  //   paymentLabels[i].previousElementSibling.appendChild(countContainer);
+  // }
+
+  paymentLabels.forEach(function(label) {
     var countContainer = document.createElement('span');
-        countContainer.className = "counter";
-    if (paymentLabels[i].id === "cc-num") maxLength = 16;
-    if (paymentLabels[i].id === "zip") maxLength = 5;
-    if (paymentLabels[i].id === "cvv") maxLength = 3;
-    paymentLabels[i].previousElementSibling.appendChild(countContainer);
-  }
+    countContainer.className = "counter";
+    if (label.id === "cc-num") maxLength = 16;
+    if (label.id === "zip") maxLength = 5;
+    if (label.id === "cvv") maxLength = 3;
+    label.previousElementSibling.appendChild(countContainer);
+  });
   
 }());
 
@@ -84,7 +93,7 @@ function removeErrorMessage(field) {
 
   //Show and hide input field for the option "other"
     design.addEventListener('change', function() {
-      let options = '<option value="default" selected>Select a Color</option>';
+      var options = '<option value="default" selected>Select a Color</option>';
 
       if (this.value === 'default') {
         color.innerHTML = defaultOption;
@@ -163,55 +172,55 @@ function removeErrorMessage(field) {
 // -------------------------------------------------------------------------
 
 (function() {
-  function showAndHide(field, creditCard, bitcoin, paypal) {        //Show / Hide option helper function
+  function showAndHide(field, creditCard, bitcoin, paypal) {    // Show or Hide option helper function
     field.creditCard.style.display = creditCard;
     field.bitcoin.style.display = bitcoin;
     field.paypal.style.display = paypal;
   };
 
-  var field = {                                                     // Holds the list of elements to be hidden
+  var field = {
     otherField: document.querySelector('#other-title'),
     creditCard: document.querySelector("#credit-card"),
     paypal: document.querySelector("#paypal"),
     bitcoin: document.querySelector("#bitcoin")
-  }
+  }                                                     // Holds the list of elements to be hidden
 
-  const title = document.querySelector('#title');       //
-  const payment = document.querySelector("#payment");   //Reference to parent div
-  var $cardFields = $('#credit-card input');            //All input fields in credit card div
+  const title = document.querySelector('#title');       // Retrieve reference to job role options
+  const payment = document.querySelector("#payment");   // Reference to parent div
+  var $cardFields = $('#credit-card input');            // All input fields in credit card div
 
-  //Hides the specified form elements
   for (var el in field) {
-    field[el].style.display = "none";                   //Hides all fields stored in the above object "field"
-  };
+    field[el].style.display = "none";
+  };                                                    // Hides all fields stored in the above object "field"
+  
     field.creditCard.style.display = 'inherit';         // Credit-card shows by default
     $cardFields.addClass("required");
 
   // --- JOB TITLE EVENT LISTENER ----------------------------------------------
-  title.addEventListener('change', function(e) {        //Show and hide input field for the option "other"
+  title.addEventListener('change', function(e) {        // Show and hide input field for the option "other"
     if (this.value === "other") {
-      field.otherField.style.display = "inherit";       //If option is other, show hidden input field
+      field.otherField.style.display = "inherit";       // If option is other, show hidden input field
     } else {
       field.otherField.style.display = "none";
-      field.otherField.value = "";                      //If option is changed, hide the input field
+      field.otherField.value = "";                      // If option is changed, hide the input field
     }
   });
 
   // --- PAYMENT EVENT LISTENER ----------------------------------------------
-  payment.addEventListener('change', function() {       //Control display when payment option is selected
-    if (this.value === "credit card") {                 //If option is credit card
-      showAndHide(field, 'inherit', 'none', 'none');    //Show card fields
-      $cardFields.addClass("required");                 //Add class required to card fields
+  payment.addEventListener('change', function() {       // Control display when payment option is selected
+    if (this.value === "credit card") {                 // If option is credit card
+      showAndHide(field, 'inherit', 'none', 'none');    // Show card fields
+      $cardFields.addClass("required");                 // Add class required to card fields
     }
-    if (this.value === "paypal") {                      //If option is paypal
-      showAndHide(field, 'none', 'none', 'inherit');    //Show paypal container
-      $cardFields.val("");                              //Reset card field content
-      $cardFields.removeClass("required");              //Remove the class required
+    if (this.value === "paypal") {                      // If option is paypal
+      showAndHide(field, 'none', 'none', 'inherit');    // Show paypal container
+      $cardFields.val("");                              // Reset card field content
+      $cardFields.removeClass("required");              // Remove the class required
     }
-    if (this.value === "bitcoin") {                     //If option is bitcoin
-      showAndHide(field, 'none', 'inherit', 'none');    //Show bitcoin container
-      $cardFields.val("");                              //Reset card field content
-      $cardFields.removeClass("required");              //Remove the class required
+    if (this.value === "bitcoin") {                     // If option is bitcoin
+      showAndHide(field, 'none', 'inherit', 'none');    // Show bitcoin container
+      $cardFields.val("");                              // Reset card field content
+      $cardFields.removeClass("required");              // Remove the class required
     }
   });
 
@@ -287,7 +296,7 @@ function validateActivities() {
   var valid = false;
   var isChecked = 0;
 
-  for (let i = 0; i < checklist.length; i++) {       //Loops through list of checkboxes and count if any checked
+  for (var i = 0; i < checklist.length; i += 1) {       //Loops through list of checkboxes and count if any checked
     if (checklist[i].checked) isChecked++
   }
   isChecked > 0 ? valid = true : valid = false;      //If checked is more than "0" it passes
@@ -364,7 +373,7 @@ function validatePayment(field) {
 // --- ON SUBMIT VALIDATION ------------------------------------------------
   form.addEventListener('submit', (e) => {
     var valid = {};
-    for (let i = 0; i < form.length; i++) {
+    for (var i = 0; i < form.length; i += 1) {
       var field = form[i];
       if (isRequired(field)) {
         isValid = validateThisField(field);
