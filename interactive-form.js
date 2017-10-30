@@ -1,44 +1,3 @@
-//Number tracker function
-
-(function createCountContainer() {
-  var paymentLabels = document.querySelectorAll(".payment-info input");
-  var cc = document.querySelector('#credit-card');
-  var maxLength = 0;
-  var count = 0;
-
-  for (var i = 0; i < paymentLabels.length; i++) {
-    var countContainer = document.createElement('span');
-        countContainer.className = "counter";
-    if (paymentLabels[i].id === "cc-num") maxLength = 16;
-    if (paymentLabels[i].id === "zip") maxLength = 5;
-    if (paymentLabels[i].id === "cvv") maxLength = 3;
-    paymentLabels[i].previousElementSibling.appendChild(countContainer);
-  }
-  
-}());
-
-//Complete this using jquery***
-(function counter() {
-  const $creditCard = $('#cc-num');
-  const $zip = $('#zip');
-  const $cvv = $('#cvv');
-
-  $creditCard.keyup( (e) => {
-    var $countContainer = $('label[for="cc-num"]').children('span');
-    $countContainer.text(e.target.value.length + "/16");
-  })
-  $zip.keyup( (e) => {
-    var $countContainer = $('label[for="zip"]').children('span');
-    $countContainer.text(e.target.value.length + "/5");
-  })
-  $cvv.keyup( (e) => {
-    var $countContainer = $('label[for="cvv"]').children('span');
-    $countContainer.text(e.target.value.length + "/3");
-  })
-
-}());
-
-
 // -------------------------------------------------------------------------
 // FUNCTIONS TO SET / GET / SHOW / REMOVE ERROR MESSAGES
 // -------------------------------------------------------------------------
@@ -61,115 +20,55 @@ function removeErrorMessage(field) {
 };
 
 // -------------------------------------------------------------------------
-// VALIDATES FIELDS DYNAMICALLY BY ID
+// CHARACTER COOUNTER FUNCTIONS
 // -------------------------------------------------------------------------
-// --- VALIDATION LIST OBJECT ----------------------------------------------
-var validate = {
-  "name": function(field, value) {                  // Validates name
-    var valid = /^[a-zA-Z ]{2,30}$/.test(value);    // Letters, 2-30 maximum
-    if (!valid) setErrorMessage(field, "Enter your first and last " + field.id + ". No special characters allowed");
-    return valid;
-  },
-  "email": function(field, value) {                 // Validates email
-    var valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,63}$/i.test(value); //
-    if (!valid) setErrorMessage(field, "Enter a valid " + field.id + " format: jane@doe.com");
-    return valid;
-  },
-  "cc-num": function(field, value) {                // Validates credit card number
-    var valid = /^(?:\d[ -]*?){13,16}$/.test(value);  
-    if (!valid) setErrorMessage(field, "Enter a 13-16 digit number");
-    return valid;
-  },
-  "zip": function(field, value) {                   //Validates zip code
-    var valid = /^\d{5}$/.test(value);
-    if (!valid) setErrorMessage(field, "Enter a 5-digit number");
-    return valid;
-  },
-  "cvv": function(field, value) {                   //Validates cvv number
-    var valid = /^\d{3}$/.test(value);
-    if (!valid) setErrorMessage(field, "Enter a 3-digit number");
-    return valid;
-  }
-}
-// --- GENERIC VALIDATION FUNCTION -----------------------------------------
-function validateThisField(field) {
-  var id = field.id, type = field.type, value = field.value; //Variable for the field's "id", "type", and "value"
-  var valid = false;
-  if (valueMissing(field)) {                         //If no value present
-    setErrorMessage(field, "This field is required");
-    showErrorMessage();                              //Set and show error message for fields that are empty
-  } else {
-    valid = validate[id](field, value);              //Match the field value to its validation function based on "id"
-  }
-  return valid;
-}
+// --- CREATE COUNT CONTAINER FUNCTION -------------------------------------
+(function createCountContainer() {
+  var paymentLabels = document.querySelectorAll(".payment-info input");
+  var cc = document.querySelector('#credit-card');
+  var maxLength = 0;
+  var count = 0;
 
+  // for (var i = 0; i < paymentLabels.length; i += 1) {
+  //   var countContainer = document.createElement('span');
+  //       countContainer.className = "counter";
+  //   if (paymentLabels[i].id === "cc-num") maxLength = 16;
+  //   if (paymentLabels[i].id === "zip") maxLength = 5;
+  //   if (paymentLabels[i].id === "cvv") maxLength = 3;
+  //   paymentLabels[i].previousElementSibling.appendChild(countContainer);
+  // }
 
-// -------------------------------------------------------------------------
-// CUSTOM VALIDATION FUNCTIONS: ACTIVITIES AND PAYMENT
-// -------------------------------------------------------------------------
-// --- ACTIVITIES VALIDATION -----------------------------------------------
-function validateActivities() {
-  var fieldset = document.querySelector('.activities'); //Fieldset surrounding activities
-  var legend = document.querySelector('.activities legend');  //Legend tag inside fieldset
-  var checklist = document.querySelectorAll('.activities input'); //List of all activities
-  var valid = false;
-  var isChecked = 0;
+  paymentLabels.forEach(function(label) {
+    var countContainer = document.createElement('span');
+    countContainer.className = "counter";
+    if (label.id === "cc-num") maxLength = 16;
+    if (label.id === "zip") maxLength = 5;
+    if (label.id === "cvv") maxLength = 3;
+    label.previousElementSibling.appendChild(countContainer);
+  });
+  
+}());
 
-  for (let i = 0; i < checklist.length; i++) {       //Loops through list of checkboxes and count if any checked
-    if (checklist[i].checked) isChecked++
-  }
-  isChecked > 0 ? valid = true : valid = false;      //If checked is more than "0" it passes
+// --- COUNTER FUNCTION ----------------------------------------------------
+(function counter() {
+  const creditCard = document.querySelector('#cc-num');
+  const zip = document.querySelector('#zip');
+  const cvv = document.querySelector('#cvv');
 
-  if (!valid) {                                      //If not valid
-    setErrorMessage(fieldset, "Select at least one activity");
-    showErrorMessage(fieldset);                      //Set and show error message
-  } else {
-    removeErrorMessage(fieldset);                    //Remove if valid
-  }
-  return valid;                                      //Return valid state
-}
+  creditCard.addEventListener('input', function() {
+    var $countContainer = $('label[for="cc-num"]').children('span');
+    $countContainer.text(this.value.length + "/16");
+  })
+  zip.addEventListener('input', function() {
+    var $countContainer = $('label[for="zip"]').children('span');
+    $countContainer.text(this.value.length + "/5");
+  })
+  cvv.addEventListener('input', function() {
+    var $countContainer = $('label[for="cvv"]').children('span');
+    $countContainer.text(this.value.length + "/3");
+  })
 
-// --- PAYMENT VALIDATION -----------------------------------------------
-function validatePayment() {
-  var option = document.querySelector("#payment");   //Get options parent element reference
-  var fields = document.querySelectorAll(".payment-info input");  //Get list of each option
-  var creditCard = {};                               //Stores the valid state of each credit card field
-  var valid = false;
-
-  if (option.selectedIndex !== 0) {                  //If option's selected index is NOT "0" || "creditcard"
-    for (var i = 0; i < fields.length; i++) {        //Clear the credit card input fields
-      fields[i].value = "";
-      removeErrorMessage(fields[i]);
-    }
-    return valid = true;                             //set valid to true
-  } else {
-    for (var i = 0; i < fields.length; i++) {
-      valid = validateThisField(fields[i]);          //Loops through and validates credit card fields
-      !valid ? showErrorMessage(fields[i]) : removeErrorMessage(fields[i]);   //Shows or removes error message if valid is true / false
-      creditCard[fields[i].id] = valid;              //Adds fields to the valid object
-    }
-    for (var field in creditCard) {
-      if (!creditCard[field]) valid = false;         //If any credit card field fails, payment is false
-    }
-    return valid;                                    //Returns the valid state of payment
-  }
-}
-
-
-// -------------------------------------------------------------------------
-// VALIDATION HELPER FUNCTIONS
-// -------------------------------------------------------------------------
-// --- REQUIRED FIELD VALIDATION -------------------------------------------
-function isRequired(field) {
-  var valid;
-  return field.className === "required" ? valid = true : valid = false; //If has class required result true, else false. return result
-}
-// --- VALUE MISSING VALIDATION --------------------------------------------
-function valueMissing(field) {
-  var valid;
-  return (field.value === "") ? valid = true : valid = false; //If value is missing result true, else false. return result
-}
+}());
 
 
 // -------------------------------------------------------------------------
@@ -194,7 +93,7 @@ function valueMissing(field) {
 
   //Show and hide input field for the option "other"
     design.addEventListener('change', function() {
-      let options = '<option value="default" selected>Select a Color</option>';
+      var options = '<option value="default" selected>Select a Color</option>';
 
       if (this.value === 'default') {
         color.innerHTML = defaultOption;
@@ -207,7 +106,8 @@ function valueMissing(field) {
           options += heartJs;
           color.innerHTML = options;
         }
-    }); //”T-Shirt Info” EventListener
+    });
+
 }());
 
 
@@ -267,88 +167,213 @@ function valueMissing(field) {
 }());// End of function
 
 
-
 // -------------------------------------------------------------------------
 // PAYMENT AND JOB ROLE FUNCTION
 // -------------------------------------------------------------------------
 
 (function() {
-  const payment = document.querySelector("#payment");
-  const elements = document.querySelectorAll('#credit-card input');
-
-  var field = {                                                     // Holds the list of elements to be hidden
-    otherField: document.querySelector('#other-title'),
-    creditCard: document.querySelector("#credit-card"),
-    paypal: document.querySelector("#paypal"),
-    bitcoin: document.querySelector("#bitcoin")
-  }
-  //Hides the specified form elements
-  for (var el in field) {
-    field[el].style.display = "none";
-  };
-  field.creditCard.style.display = 'inherit';                       // Credit-card shows by default
-
-  //Show and hide input field for the option "other"
-  const jobRole = document.querySelector('#title');
-  jobRole.addEventListener('change', function(e) {
-    if (e.target.value === "other") {
-      field.otherField.style.display = "inherit";
-    } else {
-      field.otherField.style.display = "none";
-      field.otherField.value = "";
-    }
-  });
-
-  function showAndHide(field, creditCard, bitcoin, paypal) {        //Show / Hide option helper function
+  function showAndHide(field, creditCard, bitcoin, paypal) {    // Show or Hide option helper function
     field.creditCard.style.display = creditCard;
     field.bitcoin.style.display = bitcoin;
     field.paypal.style.display = paypal;
   };
 
-  //Control display when payment option is selected
-  payment.addEventListener('change', (e) => {
-    var option = e.target;
-    if (option.value === "credit card") showAndHide(field, 'inherit', 'none', 'none');
-    if (option.value === "paypal") showAndHide(field, 'none', 'none', 'inherit');
-    if (option.value === "bitcoin") showAndHide(field, 'none', 'inherit', 'none');
+  var field = {
+    otherField: document.querySelector('#other-title'),
+    creditCard: document.querySelector("#credit-card"),
+    paypal: document.querySelector("#paypal"),
+    bitcoin: document.querySelector("#bitcoin")
+  }                                                     // Holds the list of elements to be hidden
+
+  const title = document.querySelector('#title');       // Retrieve reference to job role options
+  const payment = document.querySelector("#payment");   // Reference to parent div
+  var $cardFields = $('#credit-card input');            // All input fields in credit card div
+
+  for (var el in field) {
+    field[el].style.display = "none";
+  };                                                    // Hides all fields stored in the above object "field"
+  
+    field.creditCard.style.display = 'inherit';         // Credit-card shows by default
+    $cardFields.addClass("required");
+
+  // --- JOB TITLE EVENT LISTENER ----------------------------------------------
+  title.addEventListener('change', function(e) {        // Show and hide input field for the option "other"
+    if (this.value === "other") {
+      field.otherField.style.display = "inherit";       // If option is other, show hidden input field
+    } else {
+      field.otherField.style.display = "none";
+      field.otherField.value = "";                      // If option is changed, hide the input field
+    }
+  });
+
+  // --- PAYMENT EVENT LISTENER ----------------------------------------------
+  payment.addEventListener('change', function() {       // Control display when payment option is selected
+    if (this.value === "credit card") {                 // If option is credit card
+      showAndHide(field, 'inherit', 'none', 'none');    // Show card fields
+      $cardFields.addClass("required");                 // Add class required to card fields
+    }
+    if (this.value === "paypal") {                      // If option is paypal
+      showAndHide(field, 'none', 'none', 'inherit');    // Show paypal container
+      $cardFields.val("");                              // Reset card field content
+      $cardFields.removeClass("required");              // Remove the class required
+    }
+    if (this.value === "bitcoin") {                     // If option is bitcoin
+      showAndHide(field, 'none', 'inherit', 'none');    // Show bitcoin container
+      $cardFields.val("");                              // Reset card field content
+      $cardFields.removeClass("required");              // Remove the class required
+    }
   });
 
 }());
 
 // -------------------------------------------------------------------------
-// VALIDATION ONSUBMIT / LIVE
+// VALIDATION HELPER FUNCTIONS
+// -------------------------------------------------------------------------
+// --- REQUIRED FIELD VALIDATION -------------------------------------------
+function isRequired(field) {
+  var valid;
+  return field.className === "required" ? valid = true : valid = false;   // If has class required result true, else false. return result
+}
+// --- VALUE MISSING VALIDATION --------------------------------------------
+function valueMissing(field) {
+  var valid;
+  return (field.value === "") ? valid = true : valid = false;   // If value is missing result true, else false. return result
+}
+
+
+// -------------------------------------------------------------------------
+// VALIDATES FIELDS DYNAMICALLY BY ID
+// -------------------------------------------------------------------------
+// --- VALIDATION LIST OBJECT ----------------------------------------------
+var validate = {
+  "name": function(field, value) {                  // Validates name
+    var valid = /^[a-zA-Z ]{2,30}$/.test(value);    // Letters, 2-30 maximum
+    if (!valid) setErrorMessage(field, "Enter your first and last " + field.id + ". No special characters allowed");
+    return valid;
+  },
+  "email": function(field, value) {                 // Validates email
+    var valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,63}$/i.test(value); //
+    if (!valid) setErrorMessage(field, "Enter a valid " + field.id + " format: jane@doe.com");
+    return valid;
+  },
+  "cc-num": function(field, value) {                // Validates credit card number
+    var valid = /^(?:\d[ -]*?){13,16}$/.test(value);  
+    if (!valid) setErrorMessage(field, "Enter a 13-16 digit number");
+    return valid;
+  },
+  "zip": function(field, value) {                   //Validates zip code
+    var valid = /^\d{5}$/.test(value);
+    if (!valid) setErrorMessage(field, "Enter a 5-digit number");
+    return valid;
+  },
+  "cvv": function(field, value) {                   //Validates cvv number
+    var valid = /^\d{3}$/.test(value);
+    if (!valid) setErrorMessage(field, "Enter a 3-digit number");
+    return valid;
+  }
+}
+// --- GENERIC VALIDATION FUNCTION -----------------------------------------
+function validateThisField(field) {
+  var id = field.id, type = field.type, value = field.value; //Variable for the field's "id", "type", and "value"
+  var valid = false;
+  if (valueMissing(field)) {                         //If no value present
+    setErrorMessage(field, "This field is required");
+    showErrorMessage();                              //Set and show error message for fields that are empty
+  } else {
+    valid = validate[id](field, value);              //Match the field value to its validation function based on "id"
+  }
+  return valid;
+}
+
+
+// -------------------------------------------------------------------------
+// CUSTOM VALIDATION FUNCTIONS: ACTIVITIES AND PAYMENT
+// -------------------------------------------------------------------------
+// --- ACTIVITIES VALIDATION -----------------------------------------------
+function validateActivities() {
+  var fieldset = document.querySelector('.activities'); //Fieldset surrounding activities
+  var checklist = document.querySelectorAll('.activities input'); //List of all activities
+  var valid = false;
+  var isChecked = 0;
+
+  for (var i = 0; i < checklist.length; i += 1) {       //Loops through list of checkboxes and count if any checked
+    if (checklist[i].checked) isChecked++
+  }
+  isChecked > 0 ? valid = true : valid = false;      //If checked is more than "0" it passes
+
+  if (!valid) {                                      //If not valid
+    setErrorMessage(fieldset, "Select at least one activity");
+    showErrorMessage(fieldset);                      //Set and show error message
+  } else {
+    removeErrorMessage(fieldset);                    //Remove if valid
+  }
+  return valid;                                      //Return valid state
+}
+
+// --- PAYMENT VALIDATION -----------------------------------------------
+function validatePayment(field) {
+  var id = field.id,  value = field.value,  valid = false,  creditCard = {};   //Stores the valid state of each credit card field 
+
+  valid = validate[id](field, value);                //Loops through and validates credit card fields
+  !valid ? showErrorMessage(field) : removeErrorMessage(field);   //Shows or removes error message if valid is true / false
+  
+  creditCard[field.id] = valid;                      //Adds fields to the valid object
+
+  for (var field in creditCard) {
+    if (!creditCard[field]) valid = false;           //If any credit card field fails, payment is false
+  }
+  return valid;                                      //Returns the valid state of payment
+}
+
+
+// -------------------------------------------------------------------------
+// ONSUBMIT / LIVE VALIDATION 
 // -------------------------------------------------------------------------
 // --- LIVE FIELD VALIDATION -----------------------------------------------
 (function() {
   const form = document.register;
   const fieldset = document.querySelector('.activities');
+  var option = document.querySelector("#payment");           //Get options parent element reference
+  var creditCard = document.querySelector("#credit-card");   //Get list of each option
+  
   var isFormValid = false;
   var isValid = false;
   var valid = {};
 
   form.addEventListener('keyup', (e) => {
     var field = e.target;
-
     if (field.disabled || 
         field.type === 'submit' || 
-        field.type === 'button') return;               //Don't validate submits, buttons, and disabled fields
-    
-    if (isRequired(field)) {
-      isValid = validateThisField(field);
-      !isValid ? showErrorMessage(field) : removeErrorMessage(field);
-      valid[field.id] = isValid;
-    }
-    valid.payment = validatePayment();                 //Custom validation
-  }, true);
+        field.type === 'button') return;              //Don't validate submits, buttons, and disabled fields
+    if (!isRequired(field)) return;                   //Don't validate a field if there is no required class attribute
 
-  fieldset.addEventListener('change', (e) => {         //
-    valid.activities = validateActivities();           //Custom validation
+    isValid = validateThisField(field);
+    !isValid ? showErrorMessage(field) : removeErrorMessage(field);
+    valid[field.id] = isValid;
   }, false);
+
+  fieldset.addEventListener('change', (e) => {        //Activities event listener
+    valid.activities = validateActivities();          //Custom validation
+  }, false);
+
+  option.addEventListener('change', (e) => {          //Event listener for payment option selection
+    if (e.target.selectedIndex !== 0) {
+      isValid = true;
+      valid.payment = isValid;
+    }
+  }, false);
+
+  creditCard.addEventListener('input', (e) => {       //Event listener for credit card fields
+      var field = e.target;
+      valid.payment = validatePayment(field);         //Custom validation
+  }, false);                                          //If option's selected index is NOT "0" || "creditcard"
+
+  // console.log(valid);
 
 // --- ON SUBMIT VALIDATION ------------------------------------------------
   form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    for (let i = 0; i < form.length; i++) {
+    var valid = {};
+    for (var i = 0; i < form.length; i += 1) {
       var field = form[i];
       if (isRequired(field)) {
         isValid = validateThisField(field);
@@ -356,11 +381,9 @@ function valueMissing(field) {
         valid[field.id] = isValid;
       }
     }
-
-    //Custom validation
-    valid.activities = validateActivities();
-    valid.payment = validatePayment();
-    console.log(valid);
+    
+    valid.activities = validateActivities();          //Custom validation
+    // console.log(valid);
 
     for (var field in valid) {
       if (!valid[field]) {
