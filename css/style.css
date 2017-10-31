@@ -170,6 +170,10 @@ input:disabled {
 	color: #FF1744;
 }
 
+#running-total {
+	margin-bottom: .5em;
+}
+
 /* =================================
   Helper Classes
 ==================================== */

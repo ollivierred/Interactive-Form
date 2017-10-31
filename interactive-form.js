@@ -3,19 +3,19 @@
 // -------------------------------------------------------------------------
 // --- SET ERROR MESSAGE FUNCTION ------------------------------------------
 function setErrorMessage(field, message) {
-  $(field).data('errorMessage', message);
+  $(field).data("errorMessage", message);
 };
 // --- SHOW ERROR MESSAGE FUNCTION -----------------------------------------
 function showErrorMessage(field) {
   var $field = $(field);
-  var $errorContainer = $field.parent().children('.error');
+  var $errorContainer = $field.parent().children(".error");
 
-  if (!$errorContainer.length) $errorContainer = $('<span class="error"></span>').insertAfter($field);
-  $errorContainer.text($(field).data('errorMessage'));
+  if (!$errorContainer.length) $errorContainer = $("<span class=error></span>").insertAfter($field);
+  $errorContainer.text($(field).data("errorMessage"));
 };
 // --- REMOVE ERROR MESSAGE FUNCTION ---------------------------------------
 function removeErrorMessage(field) {
-  var errorContainer = $(field).parent().children('.error');
+  var errorContainer = $(field).parent().children(".error");
   errorContainer.remove();
 };
 
@@ -25,46 +25,36 @@ function removeErrorMessage(field) {
 // --- CREATE COUNT CONTAINER FUNCTION -------------------------------------
 (function createCountContainer() {
   var paymentLabels = document.querySelectorAll(".payment-info input");
-  var cc = document.querySelector('#credit-card');
+  var cc = document.querySelector("#credit-card");
   var maxLength = 0;
   var count = 0;
 
-  // for (var i = 0; i < paymentLabels.length; i += 1) {
-  //   var countContainer = document.createElement('span');
-  //       countContainer.className = "counter";
-  //   if (paymentLabels[i].id === "cc-num") maxLength = 16;
-  //   if (paymentLabels[i].id === "zip") maxLength = 5;
-  //   if (paymentLabels[i].id === "cvv") maxLength = 3;
-  //   paymentLabels[i].previousElementSibling.appendChild(countContainer);
-  // }
-
   paymentLabels.forEach(function(label) {
-    var countContainer = document.createElement('span');
+    var countContainer = document.createElement("span");
     countContainer.className = "counter";
     if (label.id === "cc-num") maxLength = 16;
     if (label.id === "zip") maxLength = 5;
     if (label.id === "cvv") maxLength = 3;
     label.previousElementSibling.appendChild(countContainer);
   });
-  
 }());
 
 // --- COUNTER FUNCTION ----------------------------------------------------
 (function counter() {
-  const creditCard = document.querySelector('#cc-num');
-  const zip = document.querySelector('#zip');
-  const cvv = document.querySelector('#cvv');
+  const creditCard = document.querySelector("#cc-num");
+  const zip = document.querySelector("#zip");
+  const cvv = document.querySelector("#cvv");
 
-  creditCard.addEventListener('input', function() {
-    var $countContainer = $('label[for="cc-num"]').children('span');
+  creditCard.addEventListener("input", function() {
+    var $countContainer = $("label[for=cc-num]").children("span");
     $countContainer.text(this.value.length + "/16");
   })
-  zip.addEventListener('input', function() {
-    var $countContainer = $('label[for="zip"]').children('span');
+  zip.addEventListener("input", function() {
+    var $countContainer = $("label[for=zip]").children("span");
     $countContainer.text(this.value.length + "/5");
   })
-  cvv.addEventListener('input', function() {
-    var $countContainer = $('label[for="cvv"]').children('span');
+  cvv.addEventListener("input", function() {
+    var $countContainer = $("label[for=cvv]").children("span");
     $countContainer.text(this.value.length + "/3");
   })
 
@@ -76,8 +66,8 @@ function removeErrorMessage(field) {
 // -------------------------------------------------------------------------
 
 (function() {
-  const design = document.querySelector('#design'); //
-  const color = document.querySelector('#color');   //
+  const design = document.querySelector("#design"); //
+  const color = document.querySelector("#color");   //
   const defaultOption = '<option><-- Select a T-shirt theme</option>';
   color.innerHTML = defaultOption;
 
@@ -117,8 +107,8 @@ function removeErrorMessage(field) {
 // -------------------------------------------------------------------------
 
 (function() {
-  const fieldset = document.querySelector('.activities');
-  const priceDiv = document.createElement('div');
+  const fieldset = document.querySelector(".activities");
+  const priceDiv = document.createElement("div");
   var runningTotal = 0;
   priceDiv.id = "running-total";
   fieldset.appendChild(priceDiv);
@@ -131,7 +121,7 @@ function removeErrorMessage(field) {
     }
   }; // checkboxControl function
 
-  fieldset.addEventListener('change', function(e) {
+  fieldset.addEventListener("change", function(e) {
     const checkbox = e.target;
     const isChecked = checkbox.checked;
     const itsValue = checkbox.value;
@@ -148,13 +138,13 @@ function removeErrorMessage(field) {
 
     // Stores the activities, would like this be be more dynamic
     var event = {
-      all: fieldset.querySelector('input[value="all"]'),
-      jsFrameworks: fieldset.querySelector('input[value="js-frameworks"]'),
-      jsLibs: fieldset.querySelector('input[value="js-libs"]'),
-      express: fieldset.querySelector('input[value="express"]'),
-      node: fieldset.querySelector('input[value="node"]'),
-      buildTools: fieldset.querySelector('input[value="build-tools"]'),
-      npm: fieldset.querySelector('input[value="npm"]')
+      all: fieldset.querySelector("input[value=all]"),
+      jsFrameworks: fieldset.querySelector("input[value=js-frameworks]"),
+      jsLibs: fieldset.querySelector("input[value=js-libs]"),
+      express: fieldset.querySelector("input[value=express]"),
+      node: fieldset.querySelector("input[value=node]"),
+      buildTools: fieldset.querySelector("input[value=build-tools]"),
+      npm: fieldset.querySelector("input[value=npm]")
     }
     // Prevent selection of activities that conflict
     // checkedBox, checkedBoxName, thisName ,conflict
@@ -179,21 +169,21 @@ function removeErrorMessage(field) {
   };
 
   var field = {
-    otherField: document.querySelector('#other-title'),
+    otherField: document.querySelector("#other-title"),
     creditCard: document.querySelector("#credit-card"),
     paypal: document.querySelector("#paypal"),
     bitcoin: document.querySelector("#bitcoin")
   }                                                     // Holds the list of elements to be hidden
 
-  const title = document.querySelector('#title');       // Retrieve reference to job role options
+  const title = document.querySelector("#title");       // Retrieve reference to job role options
   const payment = document.querySelector("#payment");   // Reference to parent div
-  var $cardFields = $('#credit-card input');            // All input fields in credit card div
+  var $cardFields = $("#credit-card input");            // All input fields in credit card div
 
   for (var el in field) {
     field[el].style.display = "none";
   };                                                    // Hides all fields stored in the above object "field"
   
-    field.creditCard.style.display = 'inherit';         // Credit-card shows by default
+    field.creditCard.style.display = "inherit";         // Credit-card shows by default
     $cardFields.addClass("required");
 
   // --- JOB TITLE EVENT LISTENER ----------------------------------------------
@@ -207,18 +197,18 @@ function removeErrorMessage(field) {
   });
 
   // --- PAYMENT EVENT LISTENER ----------------------------------------------
-  payment.addEventListener('change', function() {       // Control display when payment option is selected
+  payment.addEventListener("change", function() {       // Control display when payment option is selected
     if (this.value === "credit card") {                 // If option is credit card
-      showAndHide(field, 'inherit', 'none', 'none');    // Show card fields
+      showAndHide(field, "inherit", "none", "none");    // Show card fields
       $cardFields.addClass("required");                 // Add class required to card fields
     }
     if (this.value === "paypal") {                      // If option is paypal
-      showAndHide(field, 'none', 'none', 'inherit');    // Show paypal container
+      showAndHide(field, "none", "none", "inherit");    // Show paypal container
       $cardFields.val("");                              // Reset card field content
       $cardFields.removeClass("required");              // Remove the class required
     }
     if (this.value === "bitcoin") {                     // If option is bitcoin
-      showAndHide(field, 'none', 'inherit', 'none');    // Show bitcoin container
+      showAndHide(field, "none", "inherit", "none");    // Show bitcoin container
       $cardFields.val("");                              // Reset card field content
       $cardFields.removeClass("required");              // Remove the class required
     }
@@ -291,8 +281,8 @@ function validateThisField(field) {
 // -------------------------------------------------------------------------
 // --- ACTIVITIES VALIDATION -----------------------------------------------
 function validateActivities() {
-  var fieldset = document.querySelector('.activities'); //Fieldset surrounding activities
-  var checklist = document.querySelectorAll('.activities input'); //List of all activities
+  var fieldset = document.querySelector(".activities"); //Fieldset surrounding activities
+  var checklist = document.querySelectorAll(".activities input"); //List of all activities
   var valid = false;
   var isChecked = 0;
 
@@ -332,7 +322,7 @@ function validatePayment(field) {
 // --- LIVE FIELD VALIDATION -----------------------------------------------
 (function() {
   const form = document.register;
-  const fieldset = document.querySelector('.activities');
+  const fieldset = document.querySelector(".activities");
   var option = document.querySelector("#payment");           //Get options parent element reference
   var creditCard = document.querySelector("#credit-card");   //Get list of each option
   
@@ -340,11 +330,11 @@ function validatePayment(field) {
   var isValid = false;
   var valid = {};
 
-  form.addEventListener('keyup', (e) => {
+  form.addEventListener("keyup", (e) => {
     var field = e.target;
     if (field.disabled || 
-        field.type === 'submit' || 
-        field.type === 'button') return;              //Don't validate submits, buttons, and disabled fields
+        field.type === "submit" || 
+        field.type === "button") return;              //Don't validate submits, buttons, and disabled fields
     if (!isRequired(field)) return;                   //Don't validate a field if there is no required class attribute
 
     isValid = validateThisField(field);
@@ -352,18 +342,18 @@ function validatePayment(field) {
     valid[field.id] = isValid;
   }, false);
 
-  fieldset.addEventListener('change', (e) => {        //Activities event listener
+  fieldset.addEventListener("change", (e) => {        //Activities event listener
     valid.activities = validateActivities();          //Custom validation
   }, false);
 
-  option.addEventListener('change', (e) => {          //Event listener for payment option selection
+  option.addEventListener("change", (e) => {          //Event listener for payment option selection
     if (e.target.selectedIndex !== 0) {
       isValid = true;
       valid.payment = isValid;
     }
   }, false);
 
-  creditCard.addEventListener('input', (e) => {       //Event listener for credit card fields
+  creditCard.addEventListener("input", (e) => {       //Event listener for credit card fields
       var field = e.target;
       valid.payment = validatePayment(field);         //Custom validation
   }, false);                                          //If option's selected index is NOT "0" || "creditcard"
@@ -371,7 +361,7 @@ function validatePayment(field) {
   // console.log(valid);
 
 // --- ON SUBMIT VALIDATION ------------------------------------------------
-  form.addEventListener('submit', (e) => {
+  form.addEventListener("submit", (e) => {
     var valid = {};
     for (var i = 0; i < form.length; i += 1) {
       var field = form[i];
