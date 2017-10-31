@@ -51,6 +51,7 @@ button {
 
 fieldset {
 	margin-top: 1.5em;
+	margin-bottom: 0.8em;
 }
 
 legend,
@@ -165,14 +166,14 @@ input:disabled {
 	width: 100%;
 	font-size: .95em;
 	font-weight: 500;
-	margin-top: -.6em;
+	margin-top: -.35em;
 	margin-bottom: 1.7em;
 	color: #FF1744;
 }
 
-#running-total {
-	margin-bottom: .5em;
-}
+/* #running-total {
+	margin-bottom: 1.5em;
+} */
 
 /* =================================
   Helper Classes
